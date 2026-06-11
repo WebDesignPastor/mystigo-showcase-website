@@ -5,7 +5,6 @@
   from = "/*"
   to = "/index.html"
   status = 200
-  conditions = {Role = ["public"]}
 
 [[headers]]
   for = "/*"
