@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mystigo — The City Is Your Playground</title>
+  <meta name="description" content="Mystigo is a gamified urban exploration app. Walk the city, solve enigmas, discover hidden heritage, and compete on a global leaderboard." />
+  <meta property="og:title" content="Mystigo — The City Is Your Playground" />
+  <meta property="og:description" content="Walk to real-world points of interest, solve enigmas, and compete on a global leaderboard. Think escape room meets Pokémon GO." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://mystigo.world" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary:        #681417;
+      --primary-dark:   #4a0d0f;
+      --secondary:      #141768;
+      --bg-warm:        #E9E6DF;
+      --accent-green:   #1EDD88;
+      --accent-yellow:  #FFC65A;
+      --text-dark:      #2E2E2E;
+      --text-mid:       #5a5a5a;
+      --white:          #FFFFFF;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--text-dark);
+      background: var(--bg-warm);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(20, 8, 10, 0.72);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      gap: 1rem;
+    }
+
+    .nav-logo {
+      font-family: 'MedievalSharp', serif;
+      font-size: 1.5rem;
+      color: var(--white);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      flex-shrink: 0;
+    }
+
+    .nav-logo span { color: var(--accent-yellow); }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.75);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--white); }
+
+    .lang-switcher {
+      display: flex;
+      gap: 0.3rem;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .lang-btn {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.55);
+      border-radius: 5px;
+      padding: 0.28rem 0.5rem;
+      font-size: 0.68rem;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .lang-btn:hover {
+      background: rgba(255,255,255,0.08);
+      color: var(--white);
+      border-color: rgba(255,255,255,0.4);
+    }
+
+    .lang-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: var(--white);
+    }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8rem 1.5rem 5rem;
+      background:
+        radial-gradient(ellipse at 25% 40%, rgba(104,20,23,0.9) 0%, transparent 55%),
+        radial-gradient(ellipse at 75% 60%, rgba(20,23,104,0.9) 0%, transparent 55%),
+        #0e0a0b;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+      background-size: 36px 36px;
+      pointer-events: none;
+    }
+
+    .compass-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(255,198,90,0.15);
+      animation: pulse-ring 6s ease-in-out infinite;
+    }
+    .compass-ring:nth-child(1) { width: 500px; height: 500px; top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: 0s; }
+    .compass-ring:nth-child(2) { width: 700px; height: 700px; top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: 1.5s; }
+    .compass-ring:nth-child(3) { width: 900px; height: 900px; top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: 3s; }
+
+    @keyframes pulse-ring {
+      0%, 100% { opacity: 0.15; transform: translate(-50%, -50%) scale(1); }
+      50%       { opacity: 0.35; transform: translate(-50%, -50%) scale(1.03); }
+    }
+
+    .hero-content { position: relative; z-index: 1; max-width: 760px; }
+
+    .hero-badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-yellow);
+      border: 1px solid rgba(255,198,90,0.4);
+      border-radius: 999px;
+      padding: 0.35rem 1rem;
+      margin-bottom: 1.8rem;
+    }
+
+    .hero-title {
+      font-family: 'MedievalSharp', serif;
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      color: var(--white);
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-title .accent { color: var(--accent-yellow); }
+
+    .hero-subtitle {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+      color: rgba(255,255,255,0.72);
+      max-width: 540px;
+      margin: 0 auto 2.8rem;
+      line-height: 1.6;
+    }
+
+    .hero-store-icons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .store-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.65rem 1.4rem;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px;
+      color: var(--white);
+      text-decoration: none;
+      font-size: 0.82rem;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .store-badge:hover {
+      background: rgba(255,255,255,0.14);
+      border-color: rgba(255,255,255,0.3);
+    }
+
+    .store-badge svg { flex-shrink: 0; }
+
+    .store-badge .badge-label { display: flex; flex-direction: column; line-height: 1.3; }
+    .store-badge .badge-sub  { font-size: 0.68rem; opacity: 0.7; font-weight: 400; }
+    .store-badge .badge-name { font-weight: 600; font-size: 0.9rem; }
+
+    /* ── STRIP ── */
+    .strip {
+      background: var(--primary);
+      padding: 1rem 2rem;
+      text-align: center;
+    }
+
+    .strip-inner {
+      display: flex;
+      gap: 3rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.8);
+    }
+
+    .strip-inner span { white-space: nowrap; }
+    .strip-inner .dot { color: var(--accent-yellow); }
+
+    /* ── SECTIONS ── */
+    section { padding: 6rem 1.5rem; }
+
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-family: 'MedievalSharp', serif;
+      font-size: clamp(1.9rem, 4vw, 3rem);
+      line-height: 1.15;
+      color: var(--text-dark);
+      margin-bottom: 1rem;
+    }
+
+    .section-title--light { color: var(--white); }
+
+    .section-body {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      color: var(--text-mid);
+      line-height: 1.75;
+      max-width: 520px;
+    }
+
+    .section-body--light { color: rgba(255,255,255,0.65); }
+
+    .container { max-width: 1100px; margin: 0 auto; }
+
+    /* ── FEATURES ── */
+    #features { background: var(--bg-warm); }
+
+    .features-header { text-align: center; margin-bottom: 4rem; }
+    .features-header .section-body { margin: 0 auto; }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .feature-card {
+      background: var(--white);
+      border-radius: 14px;
+      padding: 2rem;
+      border: 1px solid rgba(0,0,0,0.06);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 36px rgba(104,20,23,0.1);
+    }
+
+    .feature-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .icon-red    { background: rgba(104,20,23,0.1); }
+    .icon-navy   { background: rgba(20,23,104,0.1); }
+    .icon-green  { background: rgba(30,221,136,0.15); }
+    .icon-yellow { background: rgba(255,198,90,0.2); }
+
+    .feature-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+      color: var(--text-dark);
+    }
+
+    .feature-card p {
+      font-size: 0.88rem;
+      color: var(--text-mid);
+      line-height: 1.65;
+    }
+
+    /* ── HOW IT WORKS ── */
+    #how-it-works {
+      background:
+        radial-gradient(ellipse at 80% 20%, rgba(104,20,23,0.7) 0%, transparent 50%),
+        radial-gradient(ellipse at 20% 80%, rgba(20,23,104,0.7) 0%, transparent 50%),
+        #0e0a0b;
+    }
+
+    .how-header { text-align: center; margin-bottom: 4rem; }
+    .how-header .section-label { color: var(--accent-yellow); }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+
+    .step { display: flex; gap: 1.2rem; align-items: flex-start; }
+
+    .step-num {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: 2px solid rgba(255,198,90,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'MedievalSharp', serif;
+      font-size: 1rem;
+      color: var(--accent-yellow);
+    }
+
+    .step-body h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 0.4rem;
+    }
+
+    .step-body p {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.6;
+    }
+
+    /* ── ENIGMA TYPES ── */
+    #enigmas { background: var(--bg-warm); }
+
+    .enigmas-header { margin-bottom: 3rem; }
+
+    .enigma-chips { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      background: var(--white);
+      border: 1.5px solid rgba(0,0,0,0.08);
+      color: var(--text-dark);
+    }
+
+    .chip-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .dot-red    { background: var(--primary); }
+    .dot-navy   { background: var(--secondary); }
+    .dot-green  { background: var(--accent-green); }
+    .dot-yellow { background: var(--accent-yellow); }
+
+    /* ── DISCOVERY ── */
+    #discovery { background: var(--secondary); }
+
+    .discovery-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    @media (max-width: 700px) { .discovery-inner { grid-template-columns: 1fr; } }
+
+    .discovery-visual {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .disc-map {
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 40% 45%, rgba(30,221,136,0.3), rgba(20,23,104,0.9) 70%);
+      border: 2px solid rgba(30,221,136,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      position: relative;
+    }
+
+    .disc-pulse {
+      position: absolute;
+      border-radius: 50%;
+      border: 1.5px solid rgba(30,221,136,0.4);
+      animation: disc-pulse 3s ease-out infinite;
+    }
+
+    .disc-pulse:nth-child(1) { width: 260px; height: 260px; }
+    .disc-pulse:nth-child(2) { width: 310px; height: 310px; animation-delay: 0.8s; }
+    .disc-pulse:nth-child(3) { width: 360px; height: 360px; animation-delay: 1.6s; }
+
+    @keyframes disc-pulse {
+      0%   { opacity: 0.6; transform: scale(1); }
+      100% { opacity: 0; transform: scale(1.1); }
+    }
+
+    .discovery-section-label { color: var(--accent-green); }
+
+    /* ── TIERS ── */
+    #tiers { background: var(--bg-warm); }
+
+    .tiers-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+
+    @media (max-width: 680px) { .tiers-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .tier-card {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      border: 2px solid transparent;
+      transition: transform 0.2s;
+    }
+
+    .tier-card:hover { transform: translateY(-3px); }
+
+    .tier-card.bronze   { border-color: #cd7f32; }
+    .tier-card.silver   { border-color: #a8a9ad; }
+    .tier-card.gold     { border-color: #d4af37; }
+    .tier-card.platinum { border-color: #a0c4ff; }
+
+    .tier-icon { font-size: 2.4rem; margin-bottom: 0.6rem; }
+
+    .tier-card h3 {
+      font-family: 'MedievalSharp', serif;
+      font-size: 1.1rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .tier-card.bronze   h3 { color: #cd7f32; }
+    .tier-card.silver   h3 { color: #a8a9ad; }
+    .tier-card.gold     h3 { color: #d4af37; }
+    .tier-card.platinum h3 { color: #a0c4ff; }
+
+    .tier-card p { font-size: 0.8rem; color: var(--text-mid); }
+
+    /* ── LANGUAGES ── */
+    #languages { background: var(--primary); text-align: center; }
+
+    .lang-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      justify-content: center;
+      margin-top: 2.5rem;
+    }
+
+    .lang-item { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+
+    .lang-flag { font-size: 2.5rem; line-height: 1; }
+
+    .lang-name {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* ── DOWNLOAD CTA ── */
+    #download {
+      background:
+        radial-gradient(ellipse at 30% 50%, rgba(104,20,23,0.85) 0%, transparent 60%),
+        radial-gradient(ellipse at 70% 50%, rgba(20,23,104,0.85) 0%, transparent 60%),
+        #0e0a0b;
+      text-align: center;
+    }
+
+    #download .section-label { color: var(--accent-yellow); }
+
+    .download-cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 2.5rem;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #0e0a0b;
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .footer-logo {
+      font-family: 'MedievalSharp', serif;
+      font-size: 1.4rem;
+      color: var(--white);
+      margin-bottom: 1.2rem;
+    }
+
+    .footer-logo span { color: var(--accent-yellow); }
+
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.45);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: rgba(255,255,255,0.8); }
+
+    .footer-copy { font-size: 0.75rem; color: rgba(255,255,255,0.25); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      nav { padding: 0.85rem 1.2rem; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-logo">Myst<span>i</span>go</a>
+  <ul class="nav-links">
+    <li><a href="#features"     data-i18n="nav.features"></a></li>
+    <li><a href="#how-it-works" data-i18n="nav.how"></a></li>
+    <li><a href="#download"     data-i18n="nav.download"></a></li>
+    <li><a href="terms.html"    data-i18n="nav.terms"></a></li>
+  </ul>
+  <div class="lang-switcher">
+    <button class="lang-btn active" data-lang="en">EN</button>
+    <button class="lang-btn"        data-lang="fr">FR</button>
+    <button class="lang-btn"        data-lang="pt">PT</button>
+    <button class="lang-btn"        data-lang="zh">中</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="compass-ring"></div>
+  <div class="compass-ring"></div>
+  <div class="compass-ring"></div>
+  <div class="hero-content">
+    <div class="hero-badge" data-i18n="hero.badge"></div>
+    <h1 class="hero-title" data-i18n-html="hero.title"></h1>
+    <p class="hero-subtitle" data-i18n="hero.subtitle"></p>
+    <div class="hero-store-icons">
+      <a href="#download" class="store-badge">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3.18 23.5C2.84 23.31 2.5 22.96 2.5 22.38V1.62C2.5 1.04 2.84 0.69 3.18 0.5L14.29 11.94L3.18 23.5Z" fill="#EA4335"/>
+          <path d="M18.37 15.8L14.29 11.94L18.37 8.08L21.5 9.9C22.38 10.42 22.38 11.46 21.5 11.98L18.37 15.8Z" fill="#FBBC04"/>
+          <path d="M3.18 23.5L14.29 11.94L18.37 15.8L5.5 23.23C4.71 23.66 3.77 23.84 3.18 23.5Z" fill="#34A853"/>
+          <path d="M3.18 0.5C3.77 0.16 4.71 0.34 5.5 0.77L18.37 8.08L14.29 11.94L3.18 0.5Z" fill="#4285F4"/>
+        </svg>
+        <div class="badge-label">
+          <span class="badge-sub"  data-i18n="store.hero.play.sub"></span>
+          <span class="badge-name">Google Play</span>
+        </div>
+      </a>
+      <a href="#download" class="store-badge">
+        <svg width="20" height="22" viewBox="0 0 814 1000" fill="white" xmlns="http://www.w3.org/2000/svg">
+          <path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105.4-57.4-155.9-127.3C34 353.5 6.4 262.7 6.4 175.7 6.4 79.8 43.8 37.6 98.5 37.6c49.7 0 82.1 33.4 139.7 33.4 55.8 0 92.7-33.4 143.8-33.4 52.3 0 90.7 32.9 131.3 91.9C537.3 164.5 578.7 194 620.1 194c49.7 0 87.1 30.6 91.8 34.3zm-37-235.3c-33.4 40.7-85 72.8-139.7 72.8-6.4 0-12.8-.6-19.2-1.3C566.3 108.9 610 60 644.8 26.2c-.6 38.2-28.8 79-45.4 79.4z"/>
+        </svg>
+        <div class="badge-label">
+          <span class="badge-sub"  data-i18n="store.hero.apple.sub"></span>
+          <span class="badge-name">App Store</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- STRIP -->
+<div class="strip">
+  <div class="strip-inner">
+    <span data-i18n="strip.1"></span>
+    <span class="dot">·</span>
+    <span data-i18n="strip.2"></span>
+    <span class="dot">·</span>
+    <span data-i18n="strip.3"></span>
+    <span class="dot">·</span>
+    <span data-i18n="strip.4"></span>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="features-header">
+      <div class="section-label" data-i18n="features.label"></div>
+      <h2 class="section-title" data-i18n="features.title"></h2>
+      <p class="section-body" data-i18n="features.body"></p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon icon-red">🗺️</div>
+        <h3 data-i18n="f1.title"></h3>
+        <p  data-i18n="f1.body"></p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-navy">🔍</div>
+        <h3 data-i18n="f2.title"></h3>
+        <p  data-i18n="f2.body"></p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-green">🏆</div>
+        <h3 data-i18n="f3.title"></h3>
+        <p  data-i18n="f3.body"></p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-yellow">✨</div>
+        <h3 data-i18n="f4.title"></h3>
+        <p  data-i18n="f4.body"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works">
+  <div class="container">
+    <div class="how-header">
+      <div class="section-label" data-i18n="how.label"></div>
+      <h2 class="section-title section-title--light" data-i18n="how.title"></h2>
+      <p class="section-body section-body--light" style="margin: 0 auto;" data-i18n="how.body"></p>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-body"><h3 data-i18n="s1.title"></h3><p data-i18n="s1.body"></p></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-body"><h3 data-i18n="s2.title"></h3><p data-i18n="s2.body"></p></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-body"><h3 data-i18n="s3.title"></h3><p data-i18n="s3.body"></p></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-body"><h3 data-i18n="s4.title"></h3><p data-i18n="s4.body"></p></div></div>
+      <div class="step"><div class="step-num">5</div><div class="step-body"><h3 data-i18n="s5.title"></h3><p data-i18n="s5.body"></p></div></div>
+      <div class="step"><div class="step-num">6</div><div class="step-body"><h3 data-i18n="s6.title"></h3><p data-i18n="s6.body"></p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ENIGMA TYPES -->
+<section id="enigmas">
+  <div class="container">
+    <div class="enigmas-header">
+      <div class="section-label" data-i18n="enigmas.label"></div>
+      <h2 class="section-title"  data-i18n="enigmas.title"></h2>
+      <p class="section-body" style="margin-bottom:2rem;" data-i18n="enigmas.body"></p>
+    </div>
+    <div class="enigma-chips">
+      <span class="chip"><span class="chip-dot dot-red"></span>   <span data-i18n="e1"></span></span>
+      <span class="chip"><span class="chip-dot dot-navy"></span>  <span data-i18n="e2"></span></span>
+      <span class="chip"><span class="chip-dot dot-green"></span> <span data-i18n="e3"></span></span>
+      <span class="chip"><span class="chip-dot dot-yellow"></span><span data-i18n="e4"></span></span>
+      <span class="chip"><span class="chip-dot dot-red"></span>   <span data-i18n="e5"></span></span>
+      <span class="chip"><span class="chip-dot dot-navy"></span>  <span data-i18n="e6"></span></span>
+      <span class="chip"><span class="chip-dot dot-green"></span> <span data-i18n="e7"></span></span>
+      <span class="chip"><span class="chip-dot dot-yellow"></span><span data-i18n="e8"></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- DISCOVERY -->
+<section id="discovery">
+  <div class="container">
+    <div class="discovery-inner">
+      <div>
+        <div class="section-label discovery-section-label" data-i18n="disc.label"></div>
+        <h2 class="section-title section-title--light"    data-i18n="disc.title"></h2>
+        <p class="section-body section-body--light" style="margin-bottom:2rem;" data-i18n="disc.body1"></p>
+        <p class="section-body section-body--light" data-i18n="disc.body2"></p>
+      </div>
+      <div class="discovery-visual">
+        <div class="disc-pulse"></div>
+        <div class="disc-pulse"></div>
+        <div class="disc-pulse"></div>
+        <div class="disc-map">🏛️</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIERS -->
+<section id="tiers">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:3rem;">
+      <div class="section-label" data-i18n="tiers.label"></div>
+      <h2 class="section-title"  data-i18n="tiers.title"></h2>
+      <p class="section-body" style="margin:0 auto;" data-i18n="tiers.body"></p>
+    </div>
+    <div class="tiers-grid">
+      <div class="tier-card bronze">
+        <div class="tier-icon">🥉</div>
+        <h3 data-i18n="tier1.name"></h3>
+        <p  data-i18n="tier1.body"></p>
+      </div>
+      <div class="tier-card silver">
+        <div class="tier-icon">🥈</div>
+        <h3 data-i18n="tier2.name"></h3>
+        <p  data-i18n="tier2.body"></p>
+      </div>
+      <div class="tier-card gold">
+        <div class="tier-icon">🥇</div>
+        <h3 data-i18n="tier3.name"></h3>
+        <p  data-i18n="tier3.body"></p>
+      </div>
+      <div class="tier-card platinum">
+        <div class="tier-icon">💎</div>
+        <h3 data-i18n="tier4.name"></h3>
+        <p  data-i18n="tier4.body"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LANGUAGES -->
+<section id="languages">
+  <div class="container">
+    <div class="section-label" style="text-align:center;color:rgba(255,255,255,0.6);" data-i18n="langs.label"></div>
+    <h2 class="section-title section-title--light" style="text-align:center;" data-i18n="langs.title"></h2>
+    <div class="lang-grid">
+      <div class="lang-item"><div class="lang-flag">🇺🇸</div><div class="lang-name">English</div></div>
+      <div class="lang-item"><div class="lang-flag">🇫🇷</div><div class="lang-name">Français</div></div>
+      <div class="lang-item"><div class="lang-flag">🇧🇷</div><div class="lang-name">Português</div></div>
+      <div class="lang-item"><div class="lang-flag">🇨🇳</div><div class="lang-name">中文</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOAD CTA -->
+<section id="download">
+  <div class="container">
+    <div class="section-label" data-i18n="dl.label"></div>
+    <h2 class="section-title section-title--light" data-i18n="dl.title"></h2>
+    <p class="section-body section-body--light" data-i18n="dl.body"></p>
+    <div class="download-cta">
+      <a href="#" class="store-badge" style="padding:0.9rem 1.8rem;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3.18 23.5C2.84 23.31 2.5 22.96 2.5 22.38V1.62C2.5 1.04 2.84 0.69 3.18 0.5L14.29 11.94L3.18 23.5Z" fill="#EA4335"/>
+          <path d="M18.37 15.8L14.29 11.94L18.37 8.08L21.5 9.9C22.38 10.42 22.38 11.46 21.5 11.98L18.37 15.8Z" fill="#FBBC04"/>
+          <path d="M3.18 23.5L14.29 11.94L18.37 15.8L5.5 23.23C4.71 23.66 3.77 23.84 3.18 23.5Z" fill="#34A853"/>
+          <path d="M3.18 0.5C3.77 0.16 4.71 0.34 5.5 0.77L18.37 8.08L14.29 11.94L3.18 0.5Z" fill="#4285F4"/>
+        </svg>
+        <div class="badge-label">
+          <span class="badge-sub"  data-i18n="dl.play.sub"></span>
+          <span class="badge-name">Google Play</span>
+        </div>
+      </a>
+      <a href="#" class="store-badge" style="padding:0.9rem 1.8rem;opacity:0.5;cursor:default;" aria-disabled="true">
+        <svg width="22" height="24" viewBox="0 0 814 1000" fill="white" xmlns="http://www.w3.org/2000/svg">
+          <path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105.4-57.4-155.9-127.3C34 353.5 6.4 262.7 6.4 175.7 6.4 79.8 43.8 37.6 98.5 37.6c49.7 0 82.1 33.4 139.7 33.4 55.8 0 92.7-33.4 143.8-33.4 52.3 0 90.7 32.9 131.3 91.9C537.3 164.5 578.7 194 620.1 194c49.7 0 87.1 30.6 91.8 34.3zm-37-235.3c-33.4 40.7-85 72.8-139.7 72.8-6.4 0-12.8-.6-19.2-1.3C566.3 108.9 610 60 644.8 26.2c-.6 38.2-28.8 79-45.4 79.4z"/>
+        </svg>
+        <div class="badge-label">
+          <span class="badge-sub"  data-i18n="dl.apple.sub"></span>
+          <span class="badge-name">App Store</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Myst<span>i</span>go</div>
+  <ul class="footer-links">
+    <li><a href="#features"     data-i18n="nav.features"></a></li>
+    <li><a href="#how-it-works" data-i18n="nav.how"></a></li>
+    <li><a href="#download"     data-i18n="nav.download"></a></li>
+    <li><a href="terms.html"    data-i18n="footer.terms"></a></li>
+    <li><a href="privacy.html"  data-i18n="footer.privacy"></a></li>
+  </ul>
+  <p class="footer-copy" data-i18n="footer.copy"></p>
+</footer>
+
+<script>
+const T = {
+  en: {
+    'nav.features': 'Features',
+    'nav.how': 'How it works',
+    'nav.download': 'Download',
+    'nav.terms': 'Terms',
+
+    'hero.badge': 'Gamified Urban Exploration',
+    'hero.title': 'The City Is<br>Your <span class="accent">Playground</span>',
+    'hero.subtitle': 'Walk to real-world points of interest, solve enigmas, discover hidden heritage, and compete on a global leaderboard. Escape room meets Pokémon GO.',
+
+    'store.hero.play.sub':  'Available on',
+    'store.hero.apple.sub': 'Download on the',
+
+    'strip.1': '🗺️ Explore the City',
+    'strip.2': '🔍 Solve Enigmas',
+    'strip.3': '🏆 Climb the Leaderboard',
+    'strip.4': '✨ Discover Heritage',
+
+    'features.label': 'What awaits you',
+    'features.title': 'Every street holds a secret',
+    'features.body':  'Mystigo transforms your city into a living adventure. Whether you\'re a tourist or a local, there\'s always something to discover around the next corner.',
+
+    'f1.title': 'Explore',
+    'f1.body':  'Walk to real-world points of interest hidden on a fuzzy map. The exact location reveals itself only when you\'re within 5 metres.',
+    'f2.title': 'Solve Enigmas',
+    'f2.body':  'Face 8 types of challenges: riddles, QR codes, compass headings, AI camera scans, photo overlays and more. Clues cost points — use them wisely.',
+    'f3.title': 'Compete',
+    'f3.body':  'Every attempt counts. Score well on each itinerary to climb the global leaderboard and earn your rank from Bronze to Platinum.',
+    'f4.title': 'Discover',
+    'f4.body':  'Passively collect heritage sites — cafés, castles, fountains, monuments — as you go about your day. Background detection works even when the app is closed.',
+
+    'how.label': 'The game loop',
+    'how.title': 'How it works',
+    'how.body':  'A complete adventure from first tap to final ranking.',
+
+    's1.title': 'Browse itineraries',   's1.body': 'Discover curated routes by city or proximity. No account needed to explore the catalog.',
+    's2.title': 'Start a trip',         's2.body': 'Walk to the departure point — a geofence trigger marks you ready. The adventure begins.',
+    's3.title': 'Navigate the map',     's3.body': 'The map reveals one POI at a time as a fuzzy search circle. Only proximity reveals the truth.',
+    's4.title': 'Solve the enigma',     's4.body': 'Each discovered POI unlocks a unique challenge. Wrong answers and clue requests cost points.',
+    's5.title': 'Take the final quiz',  's5.body': 'After the last POI, a post-trip quiz tests your knowledge of everything you encountered.',
+    's6.title': 'Earn your rank',       's6.body': 'Your score is calculated and your position on the global leaderboard updates in real time.',
+
+    'enigmas.label': '8 challenge types',
+    'enigmas.title': 'No two enigmas are the same',
+    'enigmas.body':  'Authors can combine multiple enigma formats in a single itinerary to keep every step surprising.',
+    'e1': 'Multiple Choice', 'e2': 'Free Text',       'e3': 'Numeric',       'e4': 'QR Code Scan',
+    'e5': 'Sequence',        'e6': 'Compass Heading', 'e7': 'AI Camera Scan','e8': 'Photo Overlay',
+
+    'disc.label': 'Discovery mode',
+    'disc.title': 'Your city, always alive',
+    'disc.body1': 'Between adventures, Mystigo quietly watches for nearby heritage sites — cafés, castles, fountains, monuments — and notifies you when you pass within 15 metres. Even when the app is closed.',
+    'disc.body2': 'Photograph the site to validate it, earn discovery points, and help grow a shared heritage map of your city. Approved POIs award bonus ranking points.',
+
+    'tiers.label': 'Ranking system',
+    'tiers.title': 'Rise through the ranks',
+    'tiers.body':  'Every completed trip, every correct answer, every discovered heritage site earns you points and moves you up through four prestige tiers.',
+    'tier1.name': 'Bronze',   'tier1.body': 'Starting rank. Every explorer begins here.',
+    'tier2.name': 'Silver',   'tier2.body': '500+ points. A seasoned city wanderer.',
+    'tier3.name': 'Gold',     'tier3.body': '2 000+ points. A master of the streets.',
+    'tier4.name': 'Platinum', 'tier4.body': '10 000+ points. The city holds no secrets from you.',
+
+    'langs.label': 'Available in',
+    'langs.title': 'Explore in your language',
+
+    'dl.label':     'Get the app',
+    'dl.title':     'Ready to explore?',
+    'dl.body':      'Download Mystigo and start your first adventure today. Available on Android, coming soon on iOS.',
+    'dl.play.sub':  'Get it on',
+    'dl.apple.sub': 'Coming soon on',
+
+    'footer.terms':   'Terms & Services',
+    'footer.privacy': 'Privacy Policy',
+    'footer.copy':    '© 2025 Mystigo. All rights reserved.',
+  },
+
+  fr: {
+    'nav.features': 'Fonctionnalités',
+    'nav.how': 'Comment ça marche',
+    'nav.download': 'Télécharger',
+    'nav.terms': 'CGU',
+
+    'hero.badge': 'Exploration Urbaine Gamifiée',
+    'hero.title': 'La Ville Est<br>Votre <span class="accent">Terrain de Jeu</span>',
+    'hero.subtitle': 'Marchez vers des points d\'intérêt réels, résolvez des énigmes, découvrez le patrimoine caché et affrontez vos rivaux dans un classement mondial. Un escape room rencontre Pokémon GO.',
+
+    'store.hero.play.sub':  'Disponible sur',
+    'store.hero.apple.sub': 'Télécharger sur',
+
+    'strip.1': '🗺️ Explorer la Ville',
+    'strip.2': '🔍 Résoudre des Énigmes',
+    'strip.3': '🏆 Grimper au Classement',
+    'strip.4': '✨ Découvrir le Patrimoine',
+
+    'features.label': 'Ce qui vous attend',
+    'features.title': 'Chaque rue cache un secret',
+    'features.body':  'Mystigo transforme votre ville en une aventure vivante. Que vous soyez touriste ou local, il y a toujours quelque chose à découvrir au prochain coin de rue.',
+
+    'f1.title': 'Explorer',
+    'f1.body':  'Marchez vers des points d\'intérêt cachés sur une carte floue. L\'emplacement exact se révèle uniquement à 5 mètres.',
+    'f2.title': 'Résoudre des Énigmes',
+    'f2.body':  'Affrontez 8 types de défis : énigmes, QR codes, caps de boussole, scans IA, superpositions photo... Les indices coûtent des points — utilisez-les judicieusement.',
+    'f3.title': 'Rivaliser',
+    'f3.body':  'Chaque tentative compte. Performez sur chaque itinéraire pour gravir le classement mondial et gagner votre rang du Bronze au Platine.',
+    'f4.title': 'Découvrir',
+    'f4.body':  'Collectez passivement des sites patrimoniaux — cafés, châteaux, fontaines, monuments — au fil de votre journée. La détection fonctionne même quand l\'appli est fermée.',
+
+    'how.label': 'La boucle de jeu',
+    'how.title': 'Comment ça marche',
+    'how.body':  'Une aventure complète du premier tap au classement final.',
+
+    's1.title': 'Parcourir les itinéraires', 's1.body': 'Découvrez des parcours curatés par ville ou proximité. Aucun compte requis pour explorer le catalogue.',
+    's2.title': 'Démarrer un voyage',        's2.body': 'Marchez jusqu\'au point de départ — un déclencheur de géofence vous indique prêt. L\'aventure commence.',
+    's3.title': 'Naviguer sur la carte',     's3.body': 'La carte révèle un point d\'intérêt à la fois sous forme de cercle flou. Seule la proximité révèle la vérité.',
+    's4.title': 'Résoudre l\'énigme',        's4.body': 'Chaque POI découvert déverrouille un défi unique. Les mauvaises réponses et demandes d\'indices coûtent des points.',
+    's5.title': 'Passer le quiz final',      's5.body': 'Après le dernier point d\'intérêt, un quiz de fin de voyage teste vos connaissances sur tout ce que vous avez rencontré.',
+    's6.title': 'Gagner votre rang',         's6.body': 'Votre score est calculé et votre position dans le classement mondial se met à jour en temps réel.',
+
+    'enigmas.label': '8 types de défis',
+    'enigmas.title': 'Aucune énigme ne se ressemble',
+    'enigmas.body':  'Les auteurs peuvent combiner plusieurs formats d\'énigmes dans un même itinéraire pour que chaque étape soit une surprise.',
+    'e1': 'Choix Multiple',    'e2': 'Texte Libre',       'e3': 'Numérique',      'e4': 'Scan QR Code',
+    'e5': 'Séquence',          'e6': 'Cap de Boussole',   'e7': 'Scan Caméra IA', 'e8': 'Superposition Photo',
+
+    'disc.label': 'Mode découverte',
+    'disc.title': 'Ta ville, toujours vivante',
+    'disc.body1': 'Entre les aventures, Mystigo surveille discrètement les sites patrimoniaux à proximité — cafés, châteaux, fontaines, monuments — et vous avertit quand vous passez à 15 mètres. Même quand l\'appli est fermée.',
+    'disc.body2': 'Photographiez le site pour le valider, gagnez des points de découverte et contribuez à cartographier le patrimoine de votre ville. Les POI approuvés accordent des points bonus.',
+
+    'tiers.label': 'Système de classement',
+    'tiers.title': 'Gravissez les échelons',
+    'tiers.body':  'Chaque voyage terminé, chaque bonne réponse, chaque site patrimonial découvert vous rapporte des points dans quatre niveaux de prestige.',
+    'tier1.name': 'Bronze',  'tier1.body': 'Rang de départ. Chaque explorateur commence ici.',
+    'tier2.name': 'Argent',  'tier2.body': '500+ points. Un vagabond urbain aguerri.',
+    'tier3.name': 'Or',      'tier3.body': '2 000+ points. Un maître des rues.',
+    'tier4.name': 'Platine', 'tier4.body': '10 000+ points. La ville n\'a plus de secrets pour vous.',
+
+    'langs.label': 'Disponible en',
+    'langs.title': 'Explorez dans votre langue',
+
+    'dl.label':     'Télécharger l\'appli',
+    'dl.title':     'Prêt à explorer ?',
+    'dl.body':      'Téléchargez Mystigo et commencez votre première aventure aujourd\'hui. Disponible sur Android, bientôt sur iOS.',
+    'dl.play.sub':  'Télécharger sur',
+    'dl.apple.sub': 'Bientôt sur',
+
+    'footer.terms':   'CGU',
+    'footer.privacy': 'Politique de confidentialité',
+    'footer.copy':    '© 2025 Mystigo. Tous droits réservés.',
+  },
+
+  pt: {
+    'nav.features': 'Funcionalidades',
+    'nav.how': 'Como funciona',
+    'nav.download': 'Baixar',
+    'nav.terms': 'Termos',
+
+    'hero.badge': 'Exploração Urbana Gamificada',
+    'hero.title': 'A Cidade É<br>O Seu <span class="accent">Playground</span>',
+    'hero.subtitle': 'Caminhe até pontos de interesse reais, resolva enigmas, descubra patrimônio oculto e compita em um ranking global. Escape room encontra Pokémon GO.',
+
+    'store.hero.play.sub':  'Disponível em',
+    'store.hero.apple.sub': 'Baixar na',
+
+    'strip.1': '🗺️ Explorar a Cidade',
+    'strip.2': '🔍 Resolver Enigmas',
+    'strip.3': '🏆 Escalar o Ranking',
+    'strip.4': '✨ Descobrir Patrimônio',
+
+    'features.label': 'O que te espera',
+    'features.title': 'Cada rua esconde um segredo',
+    'features.body':  'Mystigo transforma sua cidade numa aventura viva. Seja turista ou morador, há sempre algo para descobrir na próxima esquina.',
+
+    'f1.title': 'Explorar',
+    'f1.body':  'Caminhe até pontos de interesse escondidos num mapa difuso. A localização exata só se revela a 5 metros.',
+    'f2.title': 'Resolver Enigmas',
+    'f2.body':  'Enfrente 8 tipos de desafios: charadas, QR codes, direções de bússola, scans por IA, sobreposições de fotos e mais. Pistas custam pontos — use-as com sabedoria.',
+    'f3.title': 'Competir',
+    'f3.body':  'Cada tentativa conta. Pontue bem em cada itinerário para subir no ranking global e conquistar sua posição do Bronze ao Platina.',
+    'f4.title': 'Descobrir',
+    'f4.body':  'Colete passivamente locais de patrimônio — cafés, castelos, fontes, monumentos — enquanto segue sua rotina. A detecção em segundo plano funciona mesmo com o app fechado.',
+
+    'how.label': 'O ciclo do jogo',
+    'how.title': 'Como funciona',
+    'how.body':  'Uma aventura completa desde o primeiro toque até a classificação final.',
+
+    's1.title': 'Explorar itinerários',   's1.body': 'Descubra rotas selecionadas por cidade ou proximidade. Nenhuma conta necessária para explorar o catálogo.',
+    's2.title': 'Iniciar uma viagem',     's2.body': 'Caminhe até o ponto de partida — um gatilho de geofence marca sua chegada. A aventura começa.',
+    's3.title': 'Navegar pelo mapa',      's3.body': 'O mapa revela um POI por vez como um círculo difuso. Apenas a proximidade revela a verdade.',
+    's4.title': 'Resolver o enigma',      's4.body': 'Cada POI descoberto desbloqueia um desafio único. Respostas erradas e pedidos de dicas custam pontos.',
+    's5.title': 'Fazer o quiz final',     's5.body': 'Após o último POI, um quiz pós-viagem testa seu conhecimento sobre tudo que você encontrou.',
+    's6.title': 'Conquistar seu posto',   's6.body': 'Sua pontuação é calculada e sua posição no ranking global atualiza em tempo real.',
+
+    'enigmas.label': '8 tipos de desafios',
+    'enigmas.title': 'Nenhum enigma é igual',
+    'enigmas.body':  'Os autores podem combinar múltiplos formatos de enigma num único itinerário para manter cada etapa surpreendente.',
+    'e1': 'Múltipla Escolha',   'e2': 'Texto Livre',         'e3': 'Numérico',      'e4': 'Scan QR Code',
+    'e5': 'Sequência',          'e6': 'Direção de Bússola',  'e7': 'Scan por IA',   'e8': 'Sobreposição de Foto',
+
+    'disc.label': 'Modo descoberta',
+    'disc.title': 'Sua cidade, sempre viva',
+    'disc.body1': 'Entre aventuras, o Mystigo monitora silenciosamente locais de patrimônio próximos — cafés, castelos, fontes, monumentos — e notifica você ao passar a 15 metros. Mesmo com o app fechado.',
+    'disc.body2': 'Fotografe o local para validá-lo, ganhe pontos de descoberta e ajude a construir um mapa compartilhado do patrimônio da sua cidade. POIs aprovados concedem pontos bônus.',
+
+    'tiers.label': 'Sistema de ranking',
+    'tiers.title': 'Suba nas classificações',
+    'tiers.body':  'Cada viagem concluída, cada resposta correta, cada local de patrimônio descoberto lhe rende pontos pelos quatro níveis de prestígio.',
+    'tier1.name': 'Bronze',  'tier1.body': 'Nível inicial. Todo explorador começa aqui.',
+    'tier2.name': 'Prata',   'tier2.body': '500+ pontos. Um viajante urbano experiente.',
+    'tier3.name': 'Ouro',    'tier3.body': '2 000+ pontos. Um mestre das ruas.',
+    'tier4.name': 'Platina', 'tier4.body': '10 000+ pontos. A cidade não guarda mais segredos para você.',
+
+    'langs.label': 'Disponível em',
+    'langs.title': 'Explore no seu idioma',
+
+    'dl.label':     'Baixar o app',
+    'dl.title':     'Pronto para explorar?',
+    'dl.body':      'Baixe o Mystigo e comece sua primeira aventura hoje. Disponível no Android, em breve no iOS.',
+    'dl.play.sub':  'Baixar em',
+    'dl.apple.sub': 'Em breve em',
+
+    'footer.terms':   'Termos & Serviços',
+    'footer.privacy': 'Política de Privacidade',
+    'footer.copy':    '© 2025 Mystigo. Todos os direitos reservados.',
+  },
+
+  zh: {
+    'nav.features': '功能',
+    'nav.how': '玩法介绍',
+    'nav.download': '下载',
+    'nav.terms': '条款',
+
+    'hero.badge': '游戏化城市探索',
+    'hero.title': '城市就是<br>你的<span class="accent">游乐场</span>',
+    'hero.subtitle': '步行前往真实世界的兴趣点，解开谜题，探索隐藏遗产，在全球排行榜上一决高下。密室逃脱遇上 Pokémon GO。',
+
+    'store.hero.play.sub':  '立即下载',
+    'store.hero.apple.sub': '下载于',
+
+    'strip.1': '🗺️ 探索城市',
+    'strip.2': '🔍 解开谜题',
+    'strip.3': '🏆 登顶排行榜',
+    'strip.4': '✨ 发现遗产',
+
+    'features.label': '等待您的精彩',
+    'features.title': '每条街道都藏着秘密',
+    'features.body':  'Mystigo 将您的城市变成一场鲜活的冒险。无论您是游客还是本地人，下一个转角总有新的发现。',
+
+    'f1.title': '探索',
+    'f1.body':  '步行前往模糊地图上隐藏的兴趣点。精确位置仅在您距离5米内才会显示。',
+    'f2.title': '解谜',
+    'f2.body':  '面对8种挑战类型：谜语、二维码、指南针方向、AI摄像头扫描、照片叠加等。使用线索会扣分——请谨慎使用。',
+    'f3.title': '竞争',
+    'f3.body':  '每一次尝试都很重要。在每条路线上表现出色，攀登全球排行榜，赢得从青铜到白金的荣誉头衔。',
+    'f4.title': '发现',
+    'f4.body':  '在日常生活中被动收集遗产地点——咖啡馆、城堡、喷泉、纪念碑。即使应用关闭，后台检测仍然有效。',
+
+    'how.label': '游戏循环',
+    'how.title': '玩法介绍',
+    'how.body':  '从第一次点击到最终排名的完整冒险。',
+
+    's1.title': '浏览路线',   's1.body': '按城市或距离发现精选路线。无需账号即可浏览目录。',
+    's2.title': '开始旅程',   's2.body': '步行到出发点——地理围栏触发器标记您准备就绪。冒险开始。',
+    's3.title': '导航地图',   's3.body': '地图以模糊搜索圆圈一次显示一个兴趣点。只有靠近才能揭示真相。',
+    's4.title': '解开谜题',   's4.body': '每个发现的兴趣点解锁一个独特挑战。错误答案和请求线索都会扣分。',
+    's5.title': '完成最终测验', 's5.body': '在最后一个兴趣点之后，旅行后测验将测试您对一路所见的认知。',
+    's6.title': '赢得排名',   's6.body': '您的分数实时计算，在全球排行榜上的位置同步更新。',
+
+    'enigmas.label': '8种挑战类型',
+    'enigmas.title': '没有两个谜题是相同的',
+    'enigmas.body':  '作者可以在单一路线中组合多种谜题格式，让每一步都充满惊喜。',
+    'e1': '多项选择', 'e2': '自由文本',     'e3': '数字',         'e4': '二维码扫描',
+    'e5': '序列',     'e6': '指南针方向',   'e7': 'AI摄像头扫描', 'e8': '照片叠加',
+
+    'disc.label': '发现模式',
+    'disc.title': '您的城市，始终充满活力',
+    'disc.body1': '在冒险之间，Mystigo 悄悄监视附近的遗产地点——咖啡馆、城堡、喷泉、纪念碑——当您经过15米范围内时发送通知。即使应用关闭也有效。',
+    'disc.body2': '拍摄地点进行验证，赚取发现积分，帮助建立城市的共享遗产地图。已批准的兴趣点可获得额外排名积分。',
+
+    'tiers.label': '排名系统',
+    'tiers.title': '晋升排名',
+    'tiers.body':  '每次完成的旅程、每个正确答案、每个发现的遗产地点都为您赢得积分，在四个荣誉等级中不断提升。',
+    'tier1.name': '青铜', 'tier1.body': '起始等级。每个探险家从这里开始。',
+    'tier2.name': '白银', 'tier2.body': '500+ 积分。经验丰富的城市漫游者。',
+    'tier3.name': '黄金', 'tier3.body': '2000+ 积分。街道的主宰。',
+    'tier4.name': '白金', 'tier4.body': '10000+ 积分。城市对您无密可保。',
+
+    'langs.label': '支持语言',
+    'langs.title': '用您的语言探索',
+
+    'dl.label':     '获取应用',
+    'dl.title':     '准备好探索了吗？',
+    'dl.body':      '立即下载 Mystigo，开始您的第一次冒险。Android 版本已上线，iOS 版本即将推出。',
+    'dl.play.sub':  '下载至',
+    'dl.apple.sub': '即将推出',
+
+    'footer.terms':   '服务条款',
+    'footer.privacy': '隐私政策',
+    'footer.copy':    '© 2025 Mystigo. 保留所有权利。',
+  },
+};
+
+const HTML_LANG = { en: 'en', fr: 'fr', pt: 'pt-BR', zh: 'zh-CN' };
+const PAGE_TITLE = {
+  en: 'Mystigo — The City Is Your Playground',
+  fr: 'Mystigo — La Ville Est Votre Terrain de Jeu',
+  pt: 'Mystigo — A Cidade É O Seu Playground',
+  zh: 'Mystigo — 城市就是你的游乐场',
+};
+
+let currentLang = 'en';
+
+function applyLang(code) {
+  const t = T[code];
+  if (!t) return;
+
+  document.documentElement.lang = HTML_LANG[code] || code;
+  document.title = PAGE_TITLE[code] || PAGE_TITLE.en;
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const v = t[el.dataset.i18n];
+    if (v !== undefined) el.textContent = v;
+  });
+
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const v = t[el.getAttribute('data-i18n-html')];
+    if (v !== undefined) el.innerHTML = v;
+  });
+
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === code);
+  });
+
+  localStorage.setItem('mystigo-lang', code);
+  currentLang = code;
+}
+
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', () => applyLang(btn.dataset.lang));
+});
+
+(function init() {
+  const saved    = localStorage.getItem('mystigo-lang');
+  const browser  = (navigator.language || '').toLowerCase();
+  let   detected = 'en';
+
+  if (saved && T[saved]) {
+    detected = saved;
+  } else if (browser.startsWith('fr')) {
+    detected = 'fr';
+  } else if (browser.startsWith('pt')) {
+    detected = 'pt';
+  } else if (browser.startsWith('zh')) {
+    detected = 'zh';
+  }
+
+  applyLang(detected);
+})();
+</script>
+
+</body>
+</html>
