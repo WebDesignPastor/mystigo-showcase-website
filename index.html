@@ -3,40 +3,101 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mystigo — The City Is Your Playground</title>
-  <meta name="description" content="Mystigo is a gamified urban exploration app. Walk the city, solve enigmas, discover hidden heritage, and compete on a global leaderboard." />
-  <meta property="og:title" content="Mystigo — The City Is Your Playground" />
-  <meta property="og:description" content="Walk to real-world points of interest, solve enigmas, and compete on a global leaderboard. Think escape room meets Pokémon GO." />
+  <title>Mystigo — Your City Is a Treasure Map</title>
+  <meta name="description" content="Mystigo turns real streets into a giant treasure hunt. Walk from point to point, solve enigmas in front of real heritage, and climb the world leaderboard." />
+  <meta property="og:title" content="Mystigo — Your City Is a Treasure Map" />
+  <meta property="og:description" content="Walk from point to point, solve enigmas at real heritage sites, and compete on a global leaderboard. Escape room meets Pokémon GO." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://mystigo.world" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=IM+Fell+English:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --primary:        #681417;
-      --primary-dark:   #4a0d0f;
-      --secondary:      #141768;
-      --bg-warm:        #E9E6DF;
-      --accent-green:   #1EDD88;
-      --accent-yellow:  #FFC65A;
-      --text-dark:      #2E2E2E;
-      --text-mid:       #5a5a5a;
-      --white:          #FFFFFF;
+      --primary:      #681417;
+      --primary-dark: #4a0d0f;
+      --secondary:    #141768;
+      --beige:        #E9E6DF;
+      --green:        #1EDD88;
+      --yellow:       #FFC65A;
+      --ink:          #3b2a1a;
+      --ink-soft:     #6b5439;
+      --ink-faint:    #8a6f4d;
+      --parchment:    #e8d9b4;
+      --parchment-2:  #dcc99c;
+      --ink-dark:     #2a1c0f;
     }
 
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Inter', sans-serif;
-      color: var(--text-dark);
-      background: var(--bg-warm);
+      font-family: 'IM Fell English', serif;
+      color: var(--ink);
+      background-color: var(--parchment);
+      background-image:
+        radial-gradient(ellipse 60% 40% at 15% 8%,  rgba(122, 86, 40, 0.14), transparent 70%),
+        radial-gradient(ellipse 50% 35% at 85% 30%, rgba(122, 86, 40, 0.10), transparent 70%),
+        radial-gradient(ellipse 45% 30% at 20% 62%, rgba(110, 76, 34, 0.12), transparent 70%),
+        radial-gradient(ellipse 55% 38% at 80% 85%, rgba(122, 86, 40, 0.12), transparent 70%),
+        radial-gradient(circle 180px at 70% 12%,    rgba(96, 64, 26, 0.10), transparent 100%),
+        radial-gradient(circle 220px at 25% 40%,    rgba(96, 64, 26, 0.08), transparent 100%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.42 0 0 0 0 0.31 0 0 0 0 0.16 0 0 0 0.10 0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
       overflow-x: hidden;
     }
+
+    /* Burnt-edge vignette over everything (below nav) */
+    .vignette {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 60;
+      box-shadow:
+        inset 0 0 110px 28px rgba(74, 50, 20, 0.34),
+        inset 0 0 36px 6px  rgba(58, 38, 14, 0.22);
+    }
+
+    #page { position: relative; z-index: 1; }
+
+    /* ── TRAIL SVG (behind content) ── */
+    #trail-svg {
+      position: absolute;
+      top: 0; left: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .trail-base {
+      fill: none;
+      stroke: var(--ink-faint);
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-dasharray: 0.1 14;
+      opacity: 0.45;
+    }
+
+    .trail-ink {
+      fill: none;
+      stroke: #7a1518;
+      stroke-width: 3.2;
+      stroke-linecap: round;
+      stroke-dasharray: 0.1 14;
+      opacity: 0.9;
+    }
+
+    #traveler .walker-bob { animation: walker-bob 0.55s ease-in-out infinite alternate; }
+    @keyframes walker-bob { from { transform: translateY(0); } to { transform: translateY(-1.6px); } }
+
+    @media (prefers-reduced-motion: reduce) {
+      #traveler .walker-bob,
+      .compass-rose,
+      .disc-ring { animation: none !important; }
+    }
+
+    section { position: relative; z-index: 1; }
 
     /* ── NAV ── */
     nav {
@@ -46,54 +107,44 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1rem 2rem;
-      background: rgba(20, 8, 10, 0.72);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
       gap: 1rem;
+      padding: 0.9rem 2rem;
+      background: rgba(42, 28, 15, 0.88);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(232, 217, 180, 0.14);
     }
 
     .nav-logo {
       font-family: 'MedievalSharp', serif;
       font-size: 1.5rem;
-      color: var(--white);
+      color: var(--beige);
       text-decoration: none;
       letter-spacing: 0.04em;
       flex-shrink: 0;
     }
+    .nav-logo span { color: var(--yellow); }
 
-    .nav-logo span { color: var(--accent-yellow); }
-
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-      list-style: none;
-    }
+    .nav-links { display: flex; gap: 1.8rem; list-style: none; }
 
     .nav-links a {
-      font-size: 0.85rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
       font-weight: 500;
-      color: rgba(255,255,255,0.75);
-      text-decoration: none;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
+      color: rgba(232, 217, 180, 0.72);
+      text-decoration: none;
       transition: color 0.2s;
     }
+    .nav-links a:hover { color: var(--beige); }
 
-    .nav-links a:hover { color: var(--white); }
-
-    .lang-switcher {
-      display: flex;
-      gap: 0.3rem;
-      align-items: center;
-      flex-shrink: 0;
-    }
+    .lang-switcher { display: flex; gap: 0.3rem; align-items: center; flex-shrink: 0; }
 
     .lang-btn {
       background: transparent;
-      border: 1px solid rgba(255,255,255,0.2);
-      color: rgba(255,255,255,0.55);
+      border: 1px solid rgba(232, 217, 180, 0.28);
+      color: rgba(232, 217, 180, 0.6);
       border-radius: 5px;
       padding: 0.28rem 0.5rem;
       font-size: 0.68rem;
@@ -103,20 +154,10 @@
       cursor: pointer;
       transition: all 0.15s;
     }
+    .lang-btn:hover { background: rgba(232, 217, 180, 0.1); color: var(--beige); }
+    .lang-btn.active { background: var(--primary); border-color: var(--primary); color: var(--beige); }
 
-    .lang-btn:hover {
-      background: rgba(255,255,255,0.08);
-      color: var(--white);
-      border-color: rgba(255,255,255,0.4);
-    }
-
-    .lang-btn.active {
-      background: var(--primary);
-      border-color: var(--primary);
-      color: var(--white);
-    }
-
-    /* ── HERO ── */
+    /* ── HERO (the map's cartouche) ── */
     #hero {
       min-height: 100vh;
       display: flex;
@@ -124,481 +165,740 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 8rem 1.5rem 5rem;
-      background:
-        radial-gradient(ellipse at 25% 40%, rgba(104,20,23,0.9) 0%, transparent 55%),
-        radial-gradient(ellipse at 75% 60%, rgba(20,23,104,0.9) 0%, transparent 55%),
-        #0e0a0b;
+      padding: 7.5rem 1.5rem 4rem;
       position: relative;
-      overflow: hidden;
     }
 
-    #hero::before {
-      content: '';
+    .compass-rose {
       position: absolute;
-      inset: 0;
-      background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
-      background-size: 36px 36px;
-      pointer-events: none;
+      top: 16%;
+      right: 7%;
+      width: clamp(90px, 14vw, 170px);
+      opacity: 0.5;
+      animation: compass-sway 9s ease-in-out infinite;
+    }
+    @keyframes compass-sway {
+      0%, 100% { transform: rotate(-3deg); }
+      50%      { transform: rotate(3deg); }
     }
 
-    .compass-ring {
+    .hero-doodle-left {
       position: absolute;
-      border-radius: 50%;
-      border: 1px solid rgba(255,198,90,0.15);
-      animation: pulse-ring 6s ease-in-out infinite;
-    }
-    .compass-ring:nth-child(1) { width: 500px; height: 500px; top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: 0s; }
-    .compass-ring:nth-child(2) { width: 700px; height: 700px; top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: 1.5s; }
-    .compass-ring:nth-child(3) { width: 900px; height: 900px; top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: 3s; }
-
-    @keyframes pulse-ring {
-      0%, 100% { opacity: 0.15; transform: translate(-50%, -50%) scale(1); }
-      50%       { opacity: 0.35; transform: translate(-50%, -50%) scale(1.03); }
+      bottom: 14%;
+      left: 6%;
+      width: clamp(80px, 11vw, 150px);
+      opacity: 0.35;
     }
 
-    .hero-content { position: relative; z-index: 1; max-width: 760px; }
+    .cartouche {
+      max-width: 760px;
+      padding: 3rem 2.5rem 2.6rem;
+      border: 2.5px solid rgba(59, 42, 26, 0.65);
+      outline: 1px solid rgba(59, 42, 26, 0.4);
+      outline-offset: 7px;
+      position: relative;
+      background: rgba(232, 217, 180, 0.35);
+      transform: rotate(-0.4deg);
+    }
 
-    .hero-badge {
+    .cartouche::before, .cartouche::after {
+      content: '❖';
+      position: absolute;
+      font-size: 1rem;
+      color: rgba(59, 42, 26, 0.6);
+    }
+    .cartouche::before { top: -0.7rem; left: 50%; transform: translateX(-50%); background: var(--parchment); padding: 0 0.6rem; }
+    .cartouche::after  { bottom: -0.75rem; left: 50%; transform: translateX(-50%); background: var(--parchment); padding: 0 0.6rem; }
+
+    .hero-kicker {
+      font-family: 'Inter', sans-serif;
       display: inline-block;
       font-size: 0.72rem;
       font-weight: 600;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--accent-yellow);
-      border: 1px solid rgba(255,198,90,0.4);
-      border-radius: 999px;
-      padding: 0.35rem 1rem;
-      margin-bottom: 1.8rem;
+      color: var(--primary);
+      margin-bottom: 1.4rem;
     }
 
     .hero-title {
       font-family: 'MedievalSharp', serif;
-      font-size: clamp(2.8rem, 7vw, 5.5rem);
-      color: var(--white);
-      line-height: 1.1;
-      margin-bottom: 1.5rem;
+      font-size: clamp(2.6rem, 6.5vw, 4.6rem);
+      line-height: 1.12;
+      color: var(--ink);
+      margin-bottom: 1.4rem;
     }
-
-    .hero-title .accent { color: var(--accent-yellow); }
+    .hero-title .accent { color: var(--primary); }
 
     .hero-subtitle {
-      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.05rem, 2.2vw, 1.25rem);
       font-style: italic;
-      font-size: clamp(1.1rem, 2.5vw, 1.4rem);
-      color: rgba(255,255,255,0.72);
-      max-width: 540px;
-      margin: 0 auto 2.8rem;
-      line-height: 1.6;
+      color: var(--ink-soft);
+      max-width: 560px;
+      margin: 0 auto 2.4rem;
+      line-height: 1.65;
     }
 
-    .hero-store-icons {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
+    .hero-store-icons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
 
     .store-badge {
       display: inline-flex;
       align-items: center;
       gap: 0.6rem;
       padding: 0.65rem 1.4rem;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
+      background: var(--ink-dark);
+      border: 1px solid rgba(232, 217, 180, 0.25);
       border-radius: 8px;
-      color: var(--white);
+      color: var(--beige);
       text-decoration: none;
+      font-family: 'Inter', sans-serif;
       font-size: 0.82rem;
-      transition: background 0.2s, border-color 0.2s;
+      box-shadow: 0 4px 14px rgba(42, 28, 15, 0.3);
+      transition: transform 0.2s, box-shadow 0.2s;
     }
-
-    .store-badge:hover {
-      background: rgba(255,255,255,0.14);
-      border-color: rgba(255,255,255,0.3);
-    }
-
+    .store-badge:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(42, 28, 15, 0.38); }
     .store-badge svg { flex-shrink: 0; }
-
-    .store-badge .badge-label { display: flex; flex-direction: column; line-height: 1.3; }
-    .store-badge .badge-sub  { font-size: 0.68rem; opacity: 0.7; font-weight: 400; }
+    .store-badge .badge-label { display: flex; flex-direction: column; line-height: 1.3; text-align: left; }
+    .store-badge .badge-sub  { font-size: 0.66rem; opacity: 0.7; font-weight: 400; }
     .store-badge .badge-name { font-weight: 600; font-size: 0.9rem; }
 
-    /* ── STRIP ── */
-    .strip {
-      background: var(--primary);
-      padding: 1rem 2rem;
-      text-align: center;
-    }
-
-    .strip-inner {
+    .hero-scroll {
+      margin-top: 3.2rem;
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--ink-soft);
       display: flex;
-      gap: 3rem;
-      justify-content: center;
-      flex-wrap: wrap;
-      font-size: 0.8rem;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.8);
+      flex-direction: column;
+      align-items: center;
+      gap: 0.2rem;
+    }
+    .hero-scroll .arrow { font-size: 1.3rem; animation: arrow-drop 1.6s ease-in-out infinite; }
+    @keyframes arrow-drop {
+      0%, 100% { transform: translateY(0); opacity: 0.6; }
+      50%      { transform: translateY(6px); opacity: 1; }
     }
 
-    .strip-inner span { white-space: nowrap; }
-    .strip-inner .dot { color: var(--accent-yellow); }
+    /* invisible anchor the trail starts from */
+    .trail-stop-point { width: 2px; height: 2px; margin: 0 auto; }
 
-    /* ── SECTIONS ── */
-    section { padding: 6rem 1.5rem; }
+    /* ── STEPS ── */
+    .step {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 6.5rem 1.5rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(2rem, 5vw, 4.5rem);
+      align-items: center;
+    }
 
-    .section-label {
+    .step.rev .step-text   { order: 2; }
+    .step.rev .step-visual { order: 1; }
+
+    .step-text, .step-visual {
+      opacity: 0;
+      transform: translateY(26px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .step-text.reveal, .step-visual.reveal { opacity: 1; transform: translateY(0); }
+
+    .step-head { display: flex; align-items: center; gap: 1.1rem; margin-bottom: 1.3rem; }
+
+    .trail-stop { flex-shrink: 0; }
+
+    .seal {
+      width: 58px;
+      height: 58px;
+      border-radius: 47% 53% 51% 49% / 52% 48% 52% 48%;
+      background: radial-gradient(circle at 35% 30%, #8d2024, #681417 58%, #4a0d0f);
+      box-shadow:
+        0 3px 10px rgba(59, 42, 26, 0.4),
+        inset 0 2px 6px rgba(255, 255, 255, 0.2),
+        inset 0 -3px 8px rgba(0, 0, 0, 0.32);
+      color: var(--beige);
+      font-family: 'MedievalSharp', serif;
+      font-size: 1.35rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: rotate(-5deg);
+      filter: grayscale(0.75) opacity(0.65);
+      transition: filter 0.5s ease, transform 0.35s ease;
+    }
+    .trail-stop.reached .seal { filter: none; transform: rotate(-5deg) scale(1.08); }
+
+    .step-kicker {
+      font-family: 'Inter', sans-serif;
       font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0.14em;
+      font-weight: 700;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--primary);
-      margin-bottom: 0.75rem;
     }
 
-    .section-title {
+    .step-title {
       font-family: 'MedievalSharp', serif;
-      font-size: clamp(1.9rem, 4vw, 3rem);
-      line-height: 1.15;
-      color: var(--text-dark);
+      font-size: clamp(1.7rem, 3.4vw, 2.5rem);
+      line-height: 1.18;
+      color: var(--ink);
       margin-bottom: 1rem;
     }
 
-    .section-title--light { color: var(--white); }
-
-    .section-body {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.05rem;
-      color: var(--text-mid);
+    .step-body {
+      font-size: 1.08rem;
       line-height: 1.75;
-      max-width: 520px;
+      color: var(--ink-soft);
+      max-width: 460px;
     }
 
-    .section-body--light { color: rgba(255,255,255,0.65); }
+    .step-visual { display: flex; justify-content: center; }
 
-    .container { max-width: 1100px; margin: 0 auto; }
-
-    /* ── FEATURES ── */
-    #features { background: var(--bg-warm); }
-
-    .features-header { text-align: center; margin-bottom: 4rem; }
-    .features-header .section-body { margin: 0 auto; }
-
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1.5rem;
+    /* doodles inside steps */
+    .doodle {
+      position: absolute;
+      opacity: 0.3;
+      pointer-events: none;
+      z-index: 0;
     }
 
-    .feature-card {
-      background: var(--white);
-      border-radius: 14px;
-      padding: 2rem;
-      border: 1px solid rgba(0,0,0,0.06);
-      transition: transform 0.2s, box-shadow 0.2s;
+    /* ── STEP 1 — itinerary notes ── */
+    .quest-notes { display: flex; flex-direction: column; gap: 1rem; width: min(360px, 100%); }
+
+    .quest-note {
+      background: rgba(250, 244, 226, 0.9);
+      border: 1.5px solid rgba(59, 42, 26, 0.35);
+      border-left: 5px solid var(--primary);
+      padding: 1rem 1.2rem;
+      box-shadow: 2px 4px 12px rgba(59, 42, 26, 0.18);
+      position: relative;
     }
+    .quest-note:nth-child(1) { transform: rotate(-1.4deg); }
+    .quest-note:nth-child(2) { transform: rotate(0.9deg); }
+    .quest-note:nth-child(3) { transform: rotate(-0.7deg); }
 
-    .feature-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 36px rgba(104,20,23,0.1);
-    }
-
-    .feature-icon {
-      width: 52px;
-      height: 52px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.6rem;
-      margin-bottom: 1.2rem;
-    }
-
-    .icon-red    { background: rgba(104,20,23,0.1); }
-    .icon-navy   { background: rgba(20,23,104,0.1); }
-    .icon-green  { background: rgba(30,221,136,0.15); }
-    .icon-yellow { background: rgba(255,198,90,0.2); }
-
-    .feature-card h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.15rem;
-      font-weight: 700;
-      margin-bottom: 0.6rem;
-      color: var(--text-dark);
-    }
-
-    .feature-card p {
-      font-size: 0.88rem;
-      color: var(--text-mid);
-      line-height: 1.65;
-    }
-
-    /* ── HOW IT WORKS ── */
-    #how-it-works {
-      background:
-        radial-gradient(ellipse at 80% 20%, rgba(104,20,23,0.7) 0%, transparent 50%),
-        radial-gradient(ellipse at 20% 80%, rgba(20,23,104,0.7) 0%, transparent 50%),
-        #0e0a0b;
-    }
-
-    .how-header { text-align: center; margin-bottom: 4rem; }
-    .how-header .section-label { color: var(--accent-yellow); }
-
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 2rem;
-    }
-
-    .step { display: flex; gap: 1.2rem; align-items: flex-start; }
-
-    .step-num {
-      flex-shrink: 0;
-      width: 40px;
-      height: 40px;
+    .quest-note::before {
+      content: '';
+      position: absolute;
+      top: -7px; right: 14px;
+      width: 13px; height: 13px;
       border-radius: 50%;
-      background: var(--primary);
-      border: 2px solid rgba(255,198,90,0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background: radial-gradient(circle at 35% 30%, #8d2024, #4a0d0f);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .quest-note h4 {
       font-family: 'MedievalSharp', serif;
-      font-size: 1rem;
-      color: var(--accent-yellow);
+      font-size: 1.06rem;
+      color: var(--ink);
+      margin-bottom: 0.25rem;
     }
-
-    .step-body h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--white);
-      margin-bottom: 0.4rem;
-    }
-
-    .step-body p {
-      font-size: 0.85rem;
-      color: rgba(255,255,255,0.55);
-      line-height: 1.6;
-    }
-
-    /* ── ENIGMA TYPES ── */
-    #enigmas { background: var(--bg-warm); }
-
-    .enigmas-header { margin-bottom: 3rem; }
-
-    .enigma-chips { display: flex; flex-wrap: wrap; gap: 0.75rem; }
-
-    .chip {
-      display: inline-flex;
+    .quest-note .meta {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.74rem;
+      color: var(--ink-soft);
+      display: flex;
       align-items: center;
       gap: 0.5rem;
-      padding: 0.5rem 1rem;
-      border-radius: 999px;
-      font-size: 0.82rem;
-      font-weight: 500;
-      background: var(--white);
-      border: 1.5px solid rgba(0,0,0,0.08);
-      color: var(--text-dark);
     }
+    .quest-note .stars { color: var(--yellow); text-shadow: 0 0 1px rgba(59,42,26,0.6); letter-spacing: 0.1em; }
 
-    .chip-dot { width: 8px; height: 8px; border-radius: 50%; }
-    .dot-red    { background: var(--primary); }
-    .dot-navy   { background: var(--secondary); }
-    .dot-green  { background: var(--accent-green); }
-    .dot-yellow { background: var(--accent-yellow); }
-
-    /* ── DISCOVERY ── */
-    #discovery { background: var(--secondary); }
-
-    .discovery-inner {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      align-items: center;
-    }
-
-    @media (max-width: 700px) { .discovery-inner { grid-template-columns: 1fr; } }
-
-    .discovery-visual {
+    /* ── PHONE MOCKUPS ── */
+    .phone {
+      width: 272px;
+      border-radius: 36px;
+      background: #15100c;
+      padding: 10px;
+      box-shadow:
+        0 18px 44px rgba(42, 28, 15, 0.42),
+        0 4px 12px rgba(42, 28, 15, 0.3);
       position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      flex-shrink: 0;
     }
+    .phone.tilt-r { transform: rotate(2deg); }
+    .phone.tilt-l { transform: rotate(-2deg); }
 
-    .disc-map {
-      width: 240px;
-      height: 240px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 40% 45%, rgba(30,221,136,0.3), rgba(20,23,104,0.9) 70%);
-      border: 2px solid rgba(30,221,136,0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 5rem;
-      position: relative;
-    }
-
-    .disc-pulse {
+    .phone::after {
+      content: '';
       position: absolute;
-      border-radius: 50%;
-      border: 1.5px solid rgba(30,221,136,0.4);
-      animation: disc-pulse 3s ease-out infinite;
+      top: 18px; left: 50%;
+      transform: translateX(-50%);
+      width: 76px; height: 7px;
+      border-radius: 4px;
+      background: #2c241d;
     }
 
-    .disc-pulse:nth-child(1) { width: 260px; height: 260px; }
-    .disc-pulse:nth-child(2) { width: 310px; height: 310px; animation-delay: 0.8s; }
-    .disc-pulse:nth-child(3) { width: 360px; height: 360px; animation-delay: 1.6s; }
-
-    @keyframes disc-pulse {
-      0%   { opacity: 0.6; transform: scale(1); }
-      100% { opacity: 0; transform: scale(1.1); }
-    }
-
-    .discovery-section-label { color: var(--accent-green); }
-
-    /* ── TIERS ── */
-    #tiers { background: var(--bg-warm); }
-
-    .tiers-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
-    }
-
-    @media (max-width: 680px) { .tiers-grid { grid-template-columns: repeat(2, 1fr); } }
-
-    .tier-card {
-      background: var(--white);
-      border-radius: 12px;
-      padding: 1.5rem;
-      text-align: center;
-      border: 2px solid transparent;
-      transition: transform 0.2s;
-    }
-
-    .tier-card:hover { transform: translateY(-3px); }
-
-    .tier-card.bronze   { border-color: #cd7f32; }
-    .tier-card.silver   { border-color: #a8a9ad; }
-    .tier-card.gold     { border-color: #d4af37; }
-    .tier-card.platinum { border-color: #a0c4ff; }
-
-    .tier-icon { font-size: 2.4rem; margin-bottom: 0.6rem; }
-
-    .tier-card h3 {
-      font-family: 'MedievalSharp', serif;
-      font-size: 1.1rem;
-      margin-bottom: 0.3rem;
-    }
-
-    .tier-card.bronze   h3 { color: #cd7f32; }
-    .tier-card.silver   h3 { color: #a8a9ad; }
-    .tier-card.gold     h3 { color: #d4af37; }
-    .tier-card.platinum h3 { color: #a0c4ff; }
-
-    .tier-card p { font-size: 0.8rem; color: var(--text-mid); }
-
-    /* ── LANGUAGES ── */
-    #languages { background: var(--primary); text-align: center; }
-
-    .lang-grid {
+    .phone-screen {
+      border-radius: 27px;
+      overflow: hidden;
+      background: var(--beige);
+      height: 552px;
       display: flex;
-      flex-wrap: wrap;
-      gap: 1.5rem;
-      justify-content: center;
-      margin-top: 2.5rem;
+      flex-direction: column;
+      font-family: 'Inter', sans-serif;
     }
 
-    .lang-item { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
-
-    .lang-flag { font-size: 2.5rem; line-height: 1; }
-
-    .lang-name {
+    .app-topbar {
+      background: var(--primary);
+      color: var(--beige);
+      padding: 1.5rem 0.9rem 0.7rem;
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
       font-size: 0.78rem;
-      font-weight: 600;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      flex-shrink: 0;
+    }
+    .app-topbar .back { font-size: 0.95rem; opacity: 0.85; }
+
+    .app-bottomnav {
+      display: flex;
+      background: #fff;
+      border-top: 1px solid rgba(0,0,0,0.08);
+      flex-shrink: 0;
+    }
+    .app-bottomnav .tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: 0.5rem 0 0.65rem;
+      font-size: 0.52rem;
+      font-weight: 700;
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.7);
+      color: #9C9C9C;
+    }
+    .app-bottomnav .tab svg { width: 19px; height: 19px; stroke: #9C9C9C; }
+    .app-bottomnav .tab.active { color: var(--primary); }
+    .app-bottomnav .tab.active svg { stroke: var(--primary); }
+
+    /* map screen */
+    .app-map {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      background-color: #e3e7d8;
+      background-image:
+        radial-gradient(circle 65px at 18% 22%, #cfdec0 0%, #cfdec0 99%, transparent 100%),
+        radial-gradient(circle 50px at 85% 70%, #cfdec0 0%, #cfdec0 99%, transparent 100%),
+        linear-gradient(rgba(255,255,255,0.85) 3px, transparent 3px),
+        linear-gradient(90deg, rgba(255,255,255,0.85) 3px, transparent 3px),
+        linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 72px 72px, 72px 72px, 24px 24px, 24px 24px;
     }
 
-    /* ── DOWNLOAD CTA ── */
-    #download {
+    .fuzzy-zone {
+      position: absolute;
+      top: 14%; right: 8%;
+      width: 130px; height: 130px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(30, 221, 136, 0.4), rgba(30, 221, 136, 0.1) 65%, transparent 75%);
+      border: 2px dashed rgba(30, 160, 110, 0.7);
+    }
+
+    .map-route {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+    }
+
+    .user-dot {
+      position: absolute;
+      bottom: 26%; left: 18%;
+      width: 15px; height: 15px;
+      border-radius: 50%;
+      background: var(--secondary);
+      border: 3px solid #fff;
+      box-shadow: 0 0 0 5px rgba(20, 23, 104, 0.2), 0 1px 4px rgba(0,0,0,0.4);
+    }
+
+    .map-hint-card {
+      position: absolute;
+      left: 10px; right: 10px; bottom: 10px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 0.7rem 0.85rem;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.16);
+    }
+    .map-hint-card .hint-label {
+      font-size: 0.56rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #9C9C9C;
+      margin-bottom: 2px;
+    }
+    .map-hint-card .hint-text {
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: #2E2E2E;
+      margin-bottom: 6px;
+    }
+    .map-hint-card .hint-dist {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--primary);
+      background: rgba(104, 20, 23, 0.08);
+      border-radius: 999px;
+      padding: 3px 10px;
+    }
+
+    /* enigma screen */
+    .enigma-img {
+      height: 168px;
       background:
-        radial-gradient(ellipse at 30% 50%, rgba(104,20,23,0.85) 0%, transparent 60%),
-        radial-gradient(ellipse at 70% 50%, rgba(20,23,104,0.85) 0%, transparent 60%),
-        #0e0a0b;
+        radial-gradient(circle at 50% 42%, rgba(255, 224, 160, 0.5), transparent 55%),
+        linear-gradient(160deg, #8d8175, #5b5046 70%, #463d34);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4.2rem;
+      filter: saturate(0.75);
+      flex-shrink: 0;
+    }
+
+    .enigma-body { flex: 1; padding: 0.95rem 0.95rem 0.6rem; display: flex; flex-direction: column; }
+    .enigma-title { font-size: 0.95rem; font-weight: 700; color: #2E2E2E; margin-bottom: 0.45rem; }
+    .enigma-q { font-size: 0.8rem; line-height: 1.5; color: #5a5a5a; margin-bottom: 0.9rem; }
+
+    .enigma-input {
+      border: 1.5px solid #D8D8D8;
+      border-radius: 10px;
+      padding: 0.6rem 0.8rem;
+      font-size: 0.78rem;
+      color: #9C9C9C;
+      margin-bottom: 0.7rem;
+      background: #fff;
+    }
+
+    .enigma-validate {
+      background: var(--primary);
+      color: var(--beige);
+      border-radius: 10px;
+      padding: 0.65rem;
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.7rem;
+    }
+
+    .enigma-hint {
+      text-align: center;
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: var(--secondary);
+    }
+
+    /* enigma type chips */
+    .enigma-chips { display: flex; flex-wrap: wrap; gap: 0.55rem; margin-top: 1.4rem; max-width: 460px; }
+    .chip {
+      font-family: 'Inter', sans-serif;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.36rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 500;
+      background: rgba(250, 244, 226, 0.85);
+      border: 1.2px solid rgba(59, 42, 26, 0.35);
+      color: var(--ink);
+    }
+    .chip-dot { width: 7px; height: 7px; border-radius: 50%; }
+    .dot-red    { background: var(--primary); }
+    .dot-navy   { background: var(--secondary); }
+    .dot-green  { background: #16a06e; }
+    .dot-yellow { background: #d99a2b; }
+
+    /* ── STEP 4 — quiz card ── */
+    .quiz-card {
+      width: min(330px, 100%);
+      background: rgba(250, 244, 226, 0.92);
+      border: 2px solid rgba(59, 42, 26, 0.5);
+      outline: 1px solid rgba(59, 42, 26, 0.3);
+      outline-offset: 5px;
+      padding: 1.5rem 1.5rem 1.3rem;
+      transform: rotate(0.8deg);
+      box-shadow: 3px 6px 16px rgba(59, 42, 26, 0.2);
+    }
+    .quiz-card .quiz-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 0.6rem;
+    }
+    .quiz-card .quiz-q {
+      font-family: 'MedievalSharp', serif;
+      font-size: 1.12rem;
+      color: var(--ink);
+      margin-bottom: 1rem;
+    }
+    .quiz-opt {
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      padding: 0.55rem 0.75rem;
+      border: 1.2px solid rgba(59, 42, 26, 0.3);
+      border-radius: 9px;
+      margin-bottom: 0.55rem;
+      background: rgba(255, 255, 255, 0.5);
+    }
+    .quiz-opt .ring {
+      width: 15px; height: 15px;
+      border-radius: 50%;
+      border: 2px solid rgba(59, 42, 26, 0.4);
+      flex-shrink: 0;
+    }
+    .quiz-opt.good {
+      border-color: #16a06e;
+      color: #11744f;
+      font-weight: 600;
+      background: rgba(30, 221, 136, 0.12);
+    }
+    .quiz-opt.good .ring { border-color: #16a06e; background: radial-gradient(circle, #16a06e 45%, transparent 50%); }
+
+    /* ── STEP 5 — discovery radar + toast ── */
+    .disc-visual { position: relative; display: flex; flex-direction: column; align-items: center; gap: 1.4rem; }
+
+    .disc-radar {
+      width: 210px; height: 210px;
+      border-radius: 50%;
+      border: 2px solid rgba(59, 42, 26, 0.45);
+      background: radial-gradient(circle at 45% 40%, rgba(30, 221, 136, 0.22), rgba(232, 217, 180, 0.2) 70%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.6rem;
+      position: relative;
+    }
+
+    .disc-ring {
+      position: absolute;
+      top: 50%; left: 50%;
+      border-radius: 50%;
+      border: 1.5px solid rgba(22, 160, 110, 0.55);
+      animation: disc-ring 3s ease-out infinite;
+    }
+    .disc-ring:nth-child(1) { width: 220px; height: 220px; margin: -110px 0 0 -110px; }
+    .disc-ring:nth-child(2) { width: 220px; height: 220px; margin: -110px 0 0 -110px; animation-delay: 1s; }
+    .disc-ring:nth-child(3) { width: 220px; height: 220px; margin: -110px 0 0 -110px; animation-delay: 2s; }
+    @keyframes disc-ring {
+      0%   { transform: scale(1); opacity: 0.65; }
+      100% { transform: scale(1.55); opacity: 0; }
+    }
+
+    .disc-toast {
+      font-family: 'Inter', sans-serif;
+      background: #fff;
+      border-radius: 13px;
+      box-shadow: 0 6px 18px rgba(42, 28, 15, 0.25);
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      max-width: 280px;
+      transform: rotate(-1deg);
+    }
+    .disc-toast .toast-icon {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      background: rgba(30, 221, 136, 0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    .disc-toast .toast-title { font-size: 0.78rem; font-weight: 700; color: #2E2E2E; }
+    .disc-toast .toast-body  { font-size: 0.72rem; color: #5a5a5a; }
+
+    /* ── STEP 6 — rank shields ── */
+    .ranks { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.1rem; width: min(380px, 100%); }
+
+    .rank {
+      text-align: center;
+      padding: 1.2rem 0.8rem 1rem;
+      background: rgba(250, 244, 226, 0.85);
+      border: 1.5px solid rgba(59, 42, 26, 0.35);
+      box-shadow: 2px 4px 10px rgba(59, 42, 26, 0.15);
+    }
+    .rank:nth-child(odd)  { transform: rotate(-1deg); }
+    .rank:nth-child(even) { transform: rotate(1deg); }
+
+    .rank-medal {
+      width: 52px; height: 52px;
+      margin: 0 auto 0.6rem;
+      border-radius: 47% 53% 51% 49% / 52% 48% 52% 48%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'MedievalSharp', serif;
+      font-size: 1.35rem;
+      color: rgba(42, 28, 15, 0.85);
+      box-shadow: inset 0 2px 5px rgba(255,255,255,0.45), inset 0 -3px 6px rgba(0,0,0,0.25), 0 2px 6px rgba(59,42,26,0.3);
+    }
+    .rank.bronze   .rank-medal { background: radial-gradient(circle at 35% 30%, #e0a36b, #cd7f32 60%, #8c5320); }
+    .rank.silver   .rank-medal { background: radial-gradient(circle at 35% 30%, #d8d9dd, #a8a9ad 60%, #6f7074); }
+    .rank.gold     .rank-medal { background: radial-gradient(circle at 35% 30%, #f3d878, #d4af37 60%, #94781f); }
+    .rank.platinum .rank-medal { background: radial-gradient(circle at 35% 30%, #d8e8ff, #a0c4ff 60%, #6286c4); }
+
+    .rank h4 { font-family: 'MedievalSharp', serif; font-size: 1.02rem; color: var(--ink); margin-bottom: 0.15rem; }
+    .rank p  { font-family: 'Inter', sans-serif; font-size: 0.72rem; color: var(--ink-soft); }
+
+    /* ── STEP 7 — the X / download ── */
+    #download {
+      padding: 7rem 1.5rem 6rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .x-spot {
+      position: relative;
+      width: 130px;
+      height: 130px;
+      margin: 0 auto 1.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .x-spot .x-mark {
+      font-family: 'MedievalSharp', serif;
+      font-size: 5.2rem;
+      line-height: 1;
+      color: var(--primary);
+      text-shadow: 1px 2px 3px rgba(59, 42, 26, 0.3);
+      transform: rotate(-6deg);
+    }
+    .x-spot svg { position: absolute; inset: 0; }
+
+    .dl-kicker {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 0.8rem;
+    }
+
+    .dl-title {
+      font-family: 'MedievalSharp', serif;
+      font-size: clamp(2rem, 4.5vw, 3.1rem);
+      color: var(--ink);
+      margin-bottom: 1rem;
+    }
+
+    .dl-body {
+      font-size: 1.1rem;
+      font-style: italic;
+      color: var(--ink-soft);
+      max-width: 480px;
+      margin: 0 auto 2.4rem;
+      line-height: 1.7;
+    }
+
+    .download-cta { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; }
+
+    /* ── LANGUAGES ── */
+    #languages {
+      padding: 3.5rem 1.5rem 5rem;
       text-align: center;
     }
-
-    #download .section-label { color: var(--accent-yellow); }
-
-    .download-cta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      justify-content: center;
-      margin-top: 2.5rem;
+    #languages h2 {
+      font-family: 'MedievalSharp', serif;
+      font-size: 1.5rem;
+      color: var(--ink);
+      margin-bottom: 1.8rem;
+    }
+    .lang-grid { display: flex; flex-wrap: wrap; gap: 2rem; justify-content: center; }
+    .lang-item { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; }
+    .lang-flag { font-size: 2.2rem; line-height: 1; }
+    .lang-name {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
     }
 
     /* ── FOOTER ── */
     footer {
-      background: #0e0a0b;
-      padding: 2.5rem 1.5rem;
+      background: var(--ink-dark);
+      padding: 2.6rem 1.5rem;
       text-align: center;
-      border-top: 1px solid rgba(255,255,255,0.06);
+      position: relative;
+      z-index: 1;
     }
-
     .footer-logo {
       font-family: 'MedievalSharp', serif;
       font-size: 1.4rem;
-      color: var(--white);
+      color: var(--beige);
       margin-bottom: 1.2rem;
     }
-
-    .footer-logo span { color: var(--accent-yellow); }
-
+    .footer-logo span { color: var(--yellow); }
     .footer-links {
       display: flex;
       gap: 2rem;
       justify-content: center;
       flex-wrap: wrap;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.4rem;
       list-style: none;
     }
-
     .footer-links a {
-      font-size: 0.8rem;
-      color: rgba(255,255,255,0.45);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.76rem;
+      color: rgba(232, 217, 180, 0.5);
       text-decoration: none;
       letter-spacing: 0.06em;
       text-transform: uppercase;
       transition: color 0.2s;
     }
-
-    .footer-links a:hover { color: rgba(255,255,255,0.8); }
-
-    .footer-copy { font-size: 0.75rem; color: rgba(255,255,255,0.25); }
+    .footer-links a:hover { color: rgba(232, 217, 180, 0.9); }
+    .footer-copy { font-family: 'Inter', sans-serif; font-size: 0.72rem; color: rgba(232, 217, 180, 0.3); }
 
     /* ── RESPONSIVE ── */
+    @media (max-width: 860px) {
+      .step { grid-template-columns: 1fr; gap: 2.4rem; padding: 5rem 1.5rem; }
+      .step.rev .step-text   { order: 1; }
+      .step.rev .step-visual { order: 2; }
+      .compass-rose { top: 12%; right: 4%; }
+    }
+
     @media (max-width: 600px) {
-      nav { padding: 0.85rem 1.2rem; }
+      nav { padding: 0.8rem 1.1rem; }
       .nav-links { display: none; }
+      .cartouche { padding: 2.2rem 1.4rem 2rem; }
+      .phone { width: 248px; }
+      .phone-screen { height: 506px; }
     }
   </style>
 </head>
 <body>
 
+<div class="vignette"></div>
+
 <!-- NAV -->
 <nav>
   <a href="/" class="nav-logo">Myst<span>i</span>go</a>
   <ul class="nav-links">
-    <li><a href="#features"     data-i18n="nav.features"></a></li>
-    <li><a href="#how-it-works" data-i18n="nav.how"></a></li>
-    <li><a href="#download"     data-i18n="nav.download"></a></li>
-    <li><a href="terms.html"    data-i18n="nav.terms"></a></li>
+    <li><a href="#hero"     data-i18n="nav.adventure"></a></li>
+    <li><a href="#step-1"   data-i18n="nav.trail"></a></li>
+    <li><a href="#download" data-i18n="nav.download"></a></li>
+    <li><a href="terms.html" data-i18n="nav.terms"></a></li>
   </ul>
   <div class="lang-switcher">
     <button class="lang-btn active" data-lang="en">EN</button>
@@ -608,200 +908,325 @@
   </div>
 </nav>
 
-<!-- HERO -->
-<section id="hero">
-  <div class="compass-ring"></div>
-  <div class="compass-ring"></div>
-  <div class="compass-ring"></div>
-  <div class="hero-content">
-    <div class="hero-badge" data-i18n="hero.badge"></div>
-    <h1 class="hero-title" data-i18n-html="hero.title"></h1>
-    <p class="hero-subtitle" data-i18n="hero.subtitle"></p>
-    <div class="hero-store-icons">
-      <a href="#download" class="store-badge">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M3.18 23.5C2.84 23.31 2.5 22.96 2.5 22.38V1.62C2.5 1.04 2.84 0.69 3.18 0.5L14.29 11.94L3.18 23.5Z" fill="#EA4335"/>
-          <path d="M18.37 15.8L14.29 11.94L18.37 8.08L21.5 9.9C22.38 10.42 22.38 11.46 21.5 11.98L18.37 15.8Z" fill="#FBBC04"/>
-          <path d="M3.18 23.5L14.29 11.94L18.37 15.8L5.5 23.23C4.71 23.66 3.77 23.84 3.18 23.5Z" fill="#34A853"/>
-          <path d="M3.18 0.5C3.77 0.16 4.71 0.34 5.5 0.77L18.37 8.08L14.29 11.94L3.18 0.5Z" fill="#4285F4"/>
-        </svg>
-        <div class="badge-label">
-          <span class="badge-sub"  data-i18n="store.hero.play.sub"></span>
-          <span class="badge-name">Google Play</span>
+<div id="page">
+  <svg id="trail-svg" aria-hidden="true">
+    <defs>
+      <clipPath id="inkClip"><rect id="inkRect" x="0" y="0" width="100%" height="0" /></clipPath>
+    </defs>
+    <path id="trail-base" class="trail-base" d="" />
+    <path id="trail-ink"  class="trail-ink"  d="" clip-path="url(#inkClip)" />
+    <g id="traveler" style="display:none;">
+      <g id="traveler-flip">
+        <g class="walker-bob">
+          <ellipse cx="0" cy="17" rx="10" ry="3" fill="rgba(59,42,26,0.25)" />
+          <g stroke="#2a1c0f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none">
+            <path d="M0 -7 L0 3" />
+            <path d="M0 -4.5 L-5.5 0.5" />
+            <path d="M0 -4.5 L5 -7.5" />
+            <path d="M6 -10 L8.5 7" />
+            <path d="M0 3 L-5 11" />
+            <path d="M0 3 L4 7.5 L4.5 12" />
+          </g>
+          <circle cx="0" cy="-11" r="3.6" fill="#2a1c0f" />
+          <path d="M-5.5 -13.5 L5.5 -13.5 L2.5 -14.5 L1.5 -18.5 L-2.5 -18 L-3.5 -14.5 Z" fill="#2a1c0f" />
+        </g>
+      </g>
+    </g>
+  </svg>
+
+  <!-- HERO -->
+  <section id="hero">
+    <svg class="compass-rose" viewBox="0 0 100 100" aria-hidden="true">
+      <g stroke="#3b2a1a" fill="none" stroke-width="1">
+        <circle cx="50" cy="50" r="34" />
+        <circle cx="50" cy="50" r="28" stroke-dasharray="2 3" />
+        <circle cx="50" cy="50" r="4" fill="#3b2a1a" stroke="none" />
+      </g>
+      <g fill="#3b2a1a">
+        <polygon points="50,8 54,46 50,50 46,46" />
+        <polygon points="50,92 54,54 50,50 46,54" opacity="0.55" />
+        <polygon points="8,50 46,46 50,50 46,54" opacity="0.55" />
+        <polygon points="92,50 54,46 50,50 54,54" opacity="0.55" />
+        <polygon points="26,26 46,44 44,46" opacity="0.4" />
+        <polygon points="74,26 56,44 54,42" opacity="0.4" />
+        <polygon points="26,74 44,56 42,54" opacity="0.4" />
+        <polygon points="74,74 56,56 58,54" opacity="0.4" />
+      </g>
+      <text x="50" y="6" text-anchor="middle" font-size="9" font-family="serif" fill="#3b2a1a">N</text>
+    </svg>
+
+    <svg class="hero-doodle-left" viewBox="0 0 140 70" aria-hidden="true">
+      <g stroke="#3b2a1a" stroke-width="1.6" fill="none" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M5 62 L30 18 L42 38 L52 24 L70 62" />
+        <path d="M60 62 L88 10 L104 36 L114 22 L135 62" />
+        <path d="M24 30 L30 24 L36 32" />
+        <path d="M82 24 L88 16 L96 28" />
+      </g>
+    </svg>
+
+    <div class="cartouche">
+      <div class="hero-kicker" data-i18n="hero.kicker"></div>
+      <h1 class="hero-title" data-i18n-html="hero.title"></h1>
+      <p class="hero-subtitle" data-i18n="hero.sub"></p>
+      <div class="hero-store-icons">
+        <a href="#download" class="store-badge">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3.18 23.5C2.84 23.31 2.5 22.96 2.5 22.38V1.62C2.5 1.04 2.84 0.69 3.18 0.5L14.29 11.94L3.18 23.5Z" fill="#EA4335"/>
+            <path d="M18.37 15.8L14.29 11.94L18.37 8.08L21.5 9.9C22.38 10.42 22.38 11.46 21.5 11.98L18.37 15.8Z" fill="#FBBC04"/>
+            <path d="M3.18 23.5L14.29 11.94L18.37 15.8L5.5 23.23C4.71 23.66 3.77 23.84 3.18 23.5Z" fill="#34A853"/>
+            <path d="M3.18 0.5C3.77 0.16 4.71 0.34 5.5 0.77L18.37 8.08L14.29 11.94L3.18 0.5Z" fill="#4285F4"/>
+          </svg>
+          <div class="badge-label">
+            <span class="badge-sub"  data-i18n="store.play.sub"></span>
+            <span class="badge-name">Google Play</span>
+          </div>
+        </a>
+        <a href="#download" class="store-badge">
+          <svg width="20" height="22" viewBox="0 0 814 1000" fill="#E9E6DF" xmlns="http://www.w3.org/2000/svg">
+            <path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105.4-57.4-155.9-127.3C34 353.5 6.4 262.7 6.4 175.7 6.4 79.8 43.8 37.6 98.5 37.6c49.7 0 82.1 33.4 139.7 33.4 55.8 0 92.7-33.4 143.8-33.4 52.3 0 90.7 32.9 131.3 91.9C537.3 164.5 578.7 194 620.1 194c49.7 0 87.1 30.6 91.8 34.3zm-37-235.3c-33.4 40.7-85 72.8-139.7 72.8-6.4 0-12.8-.6-19.2-1.3C566.3 108.9 610 60 644.8 26.2c-.6 38.2-28.8 79-45.4 79.4z"/>
+          </svg>
+          <div class="badge-label">
+            <span class="badge-sub"  data-i18n="store.apple.sub"></span>
+            <span class="badge-name">App Store</span>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-scroll">
+      <span data-i18n="hero.scroll"></span>
+      <span class="arrow">⌄</span>
+    </div>
+    <div class="trail-stop-point" data-trail-point></div>
+  </section>
+
+  <!-- STEP 1 — choose your quest -->
+  <section class="step" id="step-1">
+    <div class="step-text">
+      <div class="step-head">
+        <div class="trail-stop" data-trail-point><div class="seal">I</div></div>
+        <div class="step-kicker"><span data-i18n="step.word"></span> 1/7</div>
+      </div>
+      <h2 class="step-title" data-i18n="s1.title"></h2>
+      <p class="step-body" data-i18n="s1.body"></p>
+    </div>
+    <div class="step-visual">
+      <div class="quest-notes">
+        <div class="quest-note">
+          <h4 data-i18n="it1.name"></h4>
+          <div class="meta"><span data-i18n="it1.meta"></span><span class="stars">★★★★★</span></div>
         </div>
-      </a>
-      <a href="#download" class="store-badge">
-        <svg width="20" height="22" viewBox="0 0 814 1000" fill="white" xmlns="http://www.w3.org/2000/svg">
-          <path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105.4-57.4-155.9-127.3C34 353.5 6.4 262.7 6.4 175.7 6.4 79.8 43.8 37.6 98.5 37.6c49.7 0 82.1 33.4 139.7 33.4 55.8 0 92.7-33.4 143.8-33.4 52.3 0 90.7 32.9 131.3 91.9C537.3 164.5 578.7 194 620.1 194c49.7 0 87.1 30.6 91.8 34.3zm-37-235.3c-33.4 40.7-85 72.8-139.7 72.8-6.4 0-12.8-.6-19.2-1.3C566.3 108.9 610 60 644.8 26.2c-.6 38.2-28.8 79-45.4 79.4z"/>
-        </svg>
-        <div class="badge-label">
-          <span class="badge-sub"  data-i18n="store.hero.apple.sub"></span>
-          <span class="badge-name">App Store</span>
+        <div class="quest-note">
+          <h4 data-i18n="it2.name"></h4>
+          <div class="meta"><span data-i18n="it2.meta"></span><span class="stars">★★★★☆</span></div>
         </div>
-      </a>
+        <div class="quest-note">
+          <h4 data-i18n="it3.name"></h4>
+          <div class="meta"><span data-i18n="it3.meta"></span><span class="stars">★★★★★</span></div>
+        </div>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- STRIP -->
-<div class="strip">
-  <div class="strip-inner">
-    <span data-i18n="strip.1"></span>
-    <span class="dot">·</span>
-    <span data-i18n="strip.2"></span>
-    <span class="dot">·</span>
-    <span data-i18n="strip.3"></span>
-    <span class="dot">·</span>
-    <span data-i18n="strip.4"></span>
-  </div>
-</div>
+  <!-- STEP 2 — walk toward the unknown (Figma homage) -->
+  <section class="step rev" id="step-2">
+    <div class="step-text">
+      <div class="step-head">
+        <div class="trail-stop" data-trail-point><div class="seal">II</div></div>
+        <div class="step-kicker"><span data-i18n="step.word"></span> 2/7</div>
+      </div>
+      <h2 class="step-title" data-i18n="s2.title"></h2>
+      <p class="step-body" data-i18n="s2.body"></p>
+    </div>
+    <div class="step-visual">
+      <div class="phone tilt-r">
+        <div class="phone-screen">
+          <div class="app-topbar"><span class="back">‹</span><span data-i18n="m2.step"></span></div>
+          <div class="app-map">
+            <svg class="map-route" viewBox="0 0 252 310" preserveAspectRatio="none" aria-hidden="true">
+              <path d="M48 226 C 80 200, 70 150, 120 120 S 190 80, 198 60"
+                    fill="none" stroke="#681417" stroke-width="3" stroke-dasharray="2 9" stroke-linecap="round" opacity="0.85"/>
+            </svg>
+            <div class="fuzzy-zone"></div>
+            <div class="user-dot"></div>
+            <div class="map-hint-card">
+              <div class="hint-label" data-i18n="m2.label"></div>
+              <div class="hint-text" data-i18n="m2.hint"></div>
+              <div class="hint-dist">📍 <span data-i18n="m2.dist"></span></div>
+            </div>
+          </div>
+          <div class="app-bottomnav">
+            <div class="tab">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 11 L12 4 L21 11 V20 H14 V14 H10 V20 H3 Z"/></svg>
+              <span data-i18n="mock.home"></span>
+            </div>
+            <div class="tab active">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9 4 L3 6 V20 L9 18 L15 20 L21 18 V4 L15 6 L9 4 Z M9 4 V18 M15 6 V20"/></svg>
+              <span data-i18n="mock.map"></span>
+            </div>
+            <div class="tab">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M8 6 H20 M8 12 H20 M8 18 H20 M4 6 H4.01 M4 12 H4.01 M4 18 H4.01"/></svg>
+              <span data-i18n="mock.list"></span>
+            </div>
+            <div class="tab">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21 C4 16.6 7.6 14 12 14 C16.4 14 20 16.6 20 21"/></svg>
+              <span data-i18n="mock.profile"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<!-- FEATURES -->
-<section id="features">
-  <div class="container">
-    <div class="features-header">
-      <div class="section-label" data-i18n="features.label"></div>
-      <h2 class="section-title" data-i18n="features.title"></h2>
-      <p class="section-body" data-i18n="features.body"></p>
-    </div>
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon icon-red">🗺️</div>
-        <h3 data-i18n="f1.title"></h3>
-        <p  data-i18n="f1.body"></p>
+  <!-- STEP 3 — solve the enigma -->
+  <section class="step" id="step-3">
+    <div class="step-text">
+      <div class="step-head">
+        <div class="trail-stop" data-trail-point><div class="seal">III</div></div>
+        <div class="step-kicker"><span data-i18n="step.word"></span> 3/7</div>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon icon-navy">🔍</div>
-        <h3 data-i18n="f2.title"></h3>
-        <p  data-i18n="f2.body"></p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon icon-green">🏆</div>
-        <h3 data-i18n="f3.title"></h3>
-        <p  data-i18n="f3.body"></p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon icon-yellow">✨</div>
-        <h3 data-i18n="f4.title"></h3>
-        <p  data-i18n="f4.body"></p>
+      <h2 class="step-title" data-i18n="s3.title"></h2>
+      <p class="step-body" data-i18n="s3.body"></p>
+      <div class="enigma-chips">
+        <span class="chip"><span class="chip-dot dot-red"></span>   <span data-i18n="e1"></span></span>
+        <span class="chip"><span class="chip-dot dot-navy"></span>  <span data-i18n="e2"></span></span>
+        <span class="chip"><span class="chip-dot dot-green"></span> <span data-i18n="e3"></span></span>
+        <span class="chip"><span class="chip-dot dot-yellow"></span><span data-i18n="e4"></span></span>
+        <span class="chip"><span class="chip-dot dot-red"></span>   <span data-i18n="e5"></span></span>
+        <span class="chip"><span class="chip-dot dot-navy"></span>  <span data-i18n="e6"></span></span>
+        <span class="chip"><span class="chip-dot dot-green"></span> <span data-i18n="e7"></span></span>
+        <span class="chip"><span class="chip-dot dot-yellow"></span><span data-i18n="e8"></span></span>
       </div>
     </div>
-  </div>
-</section>
+    <div class="step-visual">
+      <div class="phone tilt-l">
+        <div class="phone-screen">
+          <div class="app-topbar"><span class="back">‹</span><span data-i18n="m3.step"></span></div>
+          <div class="enigma-img">🦁</div>
+          <div class="enigma-body">
+            <div class="enigma-title" data-i18n="m3.title"></div>
+            <div class="enigma-q" data-i18n="m3.q"></div>
+            <div class="enigma-input" data-i18n="m3.ph"></div>
+            <div class="enigma-validate" data-i18n="m3.btn"></div>
+            <div class="enigma-hint">💡 <span data-i18n="m3.hint"></span></div>
+          </div>
+          <div class="app-bottomnav">
+            <div class="tab">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 11 L12 4 L21 11 V20 H14 V14 H10 V20 H3 Z"/></svg>
+              <span data-i18n="mock.home"></span>
+            </div>
+            <div class="tab active">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9 4 L3 6 V20 L9 18 L15 20 L21 18 V4 L15 6 L9 4 Z M9 4 V18 M15 6 V20"/></svg>
+              <span data-i18n="mock.map"></span>
+            </div>
+            <div class="tab">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M8 6 H20 M8 12 H20 M8 18 H20 M4 6 H4.01 M4 12 H4.01 M4 18 H4.01"/></svg>
+              <span data-i18n="mock.list"></span>
+            </div>
+            <div class="tab">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21 C4 16.6 7.6 14 12 14 C16.4 14 20 16.6 20 21"/></svg>
+              <span data-i18n="mock.profile"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<!-- HOW IT WORKS -->
-<section id="how-it-works">
-  <div class="container">
-    <div class="how-header">
-      <div class="section-label" data-i18n="how.label"></div>
-      <h2 class="section-title section-title--light" data-i18n="how.title"></h2>
-      <p class="section-body section-body--light" style="margin: 0 auto;" data-i18n="how.body"></p>
+  <!-- STEP 4 — final quiz -->
+  <section class="step rev" id="step-4">
+    <div class="step-text">
+      <div class="step-head">
+        <div class="trail-stop" data-trail-point><div class="seal">IV</div></div>
+        <div class="step-kicker"><span data-i18n="step.word"></span> 4/7</div>
+      </div>
+      <h2 class="step-title" data-i18n="s4.title"></h2>
+      <p class="step-body" data-i18n="s4.body"></p>
     </div>
-    <div class="steps">
-      <div class="step"><div class="step-num">1</div><div class="step-body"><h3 data-i18n="s1.title"></h3><p data-i18n="s1.body"></p></div></div>
-      <div class="step"><div class="step-num">2</div><div class="step-body"><h3 data-i18n="s2.title"></h3><p data-i18n="s2.body"></p></div></div>
-      <div class="step"><div class="step-num">3</div><div class="step-body"><h3 data-i18n="s3.title"></h3><p data-i18n="s3.body"></p></div></div>
-      <div class="step"><div class="step-num">4</div><div class="step-body"><h3 data-i18n="s4.title"></h3><p data-i18n="s4.body"></p></div></div>
-      <div class="step"><div class="step-num">5</div><div class="step-body"><h3 data-i18n="s5.title"></h3><p data-i18n="s5.body"></p></div></div>
-      <div class="step"><div class="step-num">6</div><div class="step-body"><h3 data-i18n="s6.title"></h3><p data-i18n="s6.body"></p></div></div>
+    <div class="step-visual">
+      <div class="quiz-card">
+        <div class="quiz-label" data-i18n="q.label"></div>
+        <div class="quiz-q" data-i18n="q.q"></div>
+        <div class="quiz-opt"><span class="ring"></span>1689</div>
+        <div class="quiz-opt good"><span class="ring"></span>1742</div>
+        <div class="quiz-opt"><span class="ring"></span>1815</div>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ENIGMA TYPES -->
-<section id="enigmas">
-  <div class="container">
-    <div class="enigmas-header">
-      <div class="section-label" data-i18n="enigmas.label"></div>
-      <h2 class="section-title"  data-i18n="enigmas.title"></h2>
-      <p class="section-body" style="margin-bottom:2rem;" data-i18n="enigmas.body"></p>
+  <!-- STEP 5 — discovery mode -->
+  <section class="step" id="step-5">
+    <div class="step-text">
+      <div class="step-head">
+        <div class="trail-stop" data-trail-point><div class="seal">V</div></div>
+        <div class="step-kicker"><span data-i18n="step.word"></span> 5/7</div>
+      </div>
+      <h2 class="step-title" data-i18n="s5.title"></h2>
+      <p class="step-body" data-i18n="s5.body"></p>
     </div>
-    <div class="enigma-chips">
-      <span class="chip"><span class="chip-dot dot-red"></span>   <span data-i18n="e1"></span></span>
-      <span class="chip"><span class="chip-dot dot-navy"></span>  <span data-i18n="e2"></span></span>
-      <span class="chip"><span class="chip-dot dot-green"></span> <span data-i18n="e3"></span></span>
-      <span class="chip"><span class="chip-dot dot-yellow"></span><span data-i18n="e4"></span></span>
-      <span class="chip"><span class="chip-dot dot-red"></span>   <span data-i18n="e5"></span></span>
-      <span class="chip"><span class="chip-dot dot-navy"></span>  <span data-i18n="e6"></span></span>
-      <span class="chip"><span class="chip-dot dot-green"></span> <span data-i18n="e7"></span></span>
-      <span class="chip"><span class="chip-dot dot-yellow"></span><span data-i18n="e8"></span></span>
+    <div class="step-visual">
+      <div class="disc-visual">
+        <div class="disc-radar">
+          <div class="disc-ring"></div>
+          <div class="disc-ring"></div>
+          <div class="disc-ring"></div>
+          🏛️
+        </div>
+        <div class="disc-toast">
+          <div class="toast-icon">✨</div>
+          <div>
+            <div class="toast-title" data-i18n="toast.title"></div>
+            <div class="toast-body"  data-i18n="toast.body"></div>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- DISCOVERY -->
-<section id="discovery">
-  <div class="container">
-    <div class="discovery-inner">
-      <div>
-        <div class="section-label discovery-section-label" data-i18n="disc.label"></div>
-        <h2 class="section-title section-title--light"    data-i18n="disc.title"></h2>
-        <p class="section-body section-body--light" style="margin-bottom:2rem;" data-i18n="disc.body1"></p>
-        <p class="section-body section-body--light" data-i18n="disc.body2"></p>
+  <!-- STEP 6 — ranks -->
+  <section class="step rev" id="step-6">
+    <div class="step-text">
+      <div class="step-head">
+        <div class="trail-stop" data-trail-point><div class="seal">VI</div></div>
+        <div class="step-kicker"><span data-i18n="step.word"></span> 6/7</div>
       </div>
-      <div class="discovery-visual">
-        <div class="disc-pulse"></div>
-        <div class="disc-pulse"></div>
-        <div class="disc-pulse"></div>
-        <div class="disc-map">🏛️</div>
+      <h2 class="step-title" data-i18n="s6.title"></h2>
+      <p class="step-body" data-i18n="s6.body"></p>
+    </div>
+    <div class="step-visual">
+      <div class="ranks">
+        <div class="rank bronze">
+          <div class="rank-medal">B</div>
+          <h4 data-i18n="tier1.name"></h4><p data-i18n="tier1.pts"></p>
+        </div>
+        <div class="rank silver">
+          <div class="rank-medal">S</div>
+          <h4 data-i18n="tier2.name"></h4><p data-i18n="tier2.pts"></p>
+        </div>
+        <div class="rank gold">
+          <div class="rank-medal">G</div>
+          <h4 data-i18n="tier3.name"></h4><p data-i18n="tier3.pts"></p>
+        </div>
+        <div class="rank platinum">
+          <div class="rank-medal">P</div>
+          <h4 data-i18n="tier4.name"></h4><p data-i18n="tier4.pts"></p>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- TIERS -->
-<section id="tiers">
-  <div class="container">
-    <div style="text-align:center;margin-bottom:3rem;">
-      <div class="section-label" data-i18n="tiers.label"></div>
-      <h2 class="section-title"  data-i18n="tiers.title"></h2>
-      <p class="section-body" style="margin:0 auto;" data-i18n="tiers.body"></p>
+  <!-- STEP 7 — the treasure / download -->
+  <section id="download">
+    <div class="x-spot" data-trail-point>
+      <svg viewBox="0 0 130 130" aria-hidden="true">
+        <circle cx="65" cy="65" r="56" fill="none" stroke="#3b2a1a" stroke-width="1.8" stroke-dasharray="5 7" opacity="0.55" />
+        <circle cx="65" cy="65" r="46" fill="none" stroke="#681417" stroke-width="1.4" opacity="0.4" />
+      </svg>
+      <div class="x-mark">✕</div>
     </div>
-    <div class="tiers-grid">
-      <div class="tier-card bronze">
-        <div class="tier-icon">🥉</div>
-        <h3 data-i18n="tier1.name"></h3>
-        <p  data-i18n="tier1.body"></p>
-      </div>
-      <div class="tier-card silver">
-        <div class="tier-icon">🥈</div>
-        <h3 data-i18n="tier2.name"></h3>
-        <p  data-i18n="tier2.body"></p>
-      </div>
-      <div class="tier-card gold">
-        <div class="tier-icon">🥇</div>
-        <h3 data-i18n="tier3.name"></h3>
-        <p  data-i18n="tier3.body"></p>
-      </div>
-      <div class="tier-card platinum">
-        <div class="tier-icon">💎</div>
-        <h3 data-i18n="tier4.name"></h3>
-        <p  data-i18n="tier4.body"></p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- LANGUAGES -->
-<section id="languages">
-  <div class="container">
-    <div class="section-label" style="text-align:center;color:rgba(255,255,255,0.6);" data-i18n="langs.label"></div>
-    <h2 class="section-title section-title--light" style="text-align:center;" data-i18n="langs.title"></h2>
-    <div class="lang-grid">
-      <div class="lang-item"><div class="lang-flag">🇺🇸</div><div class="lang-name">English</div></div>
-      <div class="lang-item"><div class="lang-flag">🇫🇷</div><div class="lang-name">Français</div></div>
-      <div class="lang-item"><div class="lang-flag">🇧🇷</div><div class="lang-name">Português</div></div>
-      <div class="lang-item"><div class="lang-flag">🇨🇳</div><div class="lang-name">中文</div></div>
-    </div>
-  </div>
-</section>
-
-<!-- DOWNLOAD CTA -->
-<section id="download">
-  <div class="container">
-    <div class="section-label" data-i18n="dl.label"></div>
-    <h2 class="section-title section-title--light" data-i18n="dl.title"></h2>
-    <p class="section-body section-body--light" data-i18n="dl.body"></p>
+    <div class="dl-kicker"><span data-i18n="step.word"></span> 7/7 — <span data-i18n="dl.kicker"></span></div>
+    <h2 class="dl-title" data-i18n="dl.title"></h2>
+    <p class="dl-body" data-i18n="dl.body"></p>
     <div class="download-cta">
       <a href="#" class="store-badge" style="padding:0.9rem 1.8rem;">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -815,8 +1240,8 @@
           <span class="badge-name">Google Play</span>
         </div>
       </a>
-      <a href="#" class="store-badge" style="padding:0.9rem 1.8rem;opacity:0.5;cursor:default;" aria-disabled="true">
-        <svg width="22" height="24" viewBox="0 0 814 1000" fill="white" xmlns="http://www.w3.org/2000/svg">
+      <a href="#" class="store-badge" style="padding:0.9rem 1.8rem;opacity:0.55;cursor:default;" aria-disabled="true">
+        <svg width="22" height="24" viewBox="0 0 814 1000" fill="#E9E6DF" xmlns="http://www.w3.org/2000/svg">
           <path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105.4-57.4-155.9-127.3C34 353.5 6.4 262.7 6.4 175.7 6.4 79.8 43.8 37.6 98.5 37.6c49.7 0 82.1 33.4 139.7 33.4 55.8 0 92.7-33.4 143.8-33.4 52.3 0 90.7 32.9 131.3 91.9C537.3 164.5 578.7 194 620.1 194c49.7 0 87.1 30.6 91.8 34.3zm-37-235.3c-33.4 40.7-85 72.8-139.7 72.8-6.4 0-12.8-.6-19.2-1.3C566.3 108.9 610 60 644.8 26.2c-.6 38.2-28.8 79-45.4 79.4z"/>
         </svg>
         <div class="badge-label">
@@ -825,18 +1250,28 @@
         </div>
       </a>
     </div>
-  </div>
-</section>
+  </section>
+
+  <!-- LANGUAGES -->
+  <section id="languages">
+    <h2 data-i18n="langs.title"></h2>
+    <div class="lang-grid">
+      <div class="lang-item"><div class="lang-flag">🇺🇸</div><div class="lang-name">English</div></div>
+      <div class="lang-item"><div class="lang-flag">🇫🇷</div><div class="lang-name">Français</div></div>
+      <div class="lang-item"><div class="lang-flag">🇧🇷</div><div class="lang-name">Português</div></div>
+      <div class="lang-item"><div class="lang-flag">🇨🇳</div><div class="lang-name">中文</div></div>
+    </div>
+  </section>
+</div>
 
 <!-- FOOTER -->
 <footer>
   <div class="footer-logo">Myst<span>i</span>go</div>
   <ul class="footer-links">
-    <li><a href="#features"     data-i18n="nav.features"></a></li>
-    <li><a href="#how-it-works" data-i18n="nav.how"></a></li>
-    <li><a href="#download"     data-i18n="nav.download"></a></li>
-    <li><a href="terms.html"    data-i18n="footer.terms"></a></li>
-    <li><a href="privacy.html"  data-i18n="footer.privacy"></a></li>
+    <li><a href="#step-1"      data-i18n="nav.trail"></a></li>
+    <li><a href="#download"    data-i18n="nav.download"></a></li>
+    <li><a href="terms.html"   data-i18n="footer.terms"></a></li>
+    <li><a href="privacy.html" data-i18n="footer.privacy"></a></li>
   </ul>
   <p class="footer-copy" data-i18n="footer.copy"></p>
 </footer>
@@ -844,315 +1279,297 @@
 <script>
 const T = {
   en: {
-    'nav.features': 'Features',
-    'nav.how': 'How it works',
-    'nav.download': 'Download',
-    'nav.terms': 'Terms',
+    'nav.adventure': 'The Adventure',
+    'nav.trail':     'The Trail',
+    'nav.download':  'Download',
+    'nav.terms':     'Terms',
 
-    'hero.badge': 'Gamified Urban Exploration',
-    'hero.title': 'The City Is<br>Your <span class="accent">Playground</span>',
-    'hero.subtitle': 'Walk to real-world points of interest, solve enigmas, discover hidden heritage, and compete on a global leaderboard. Escape room meets Pokémon GO.',
+    'hero.kicker': 'A real-world treasure hunt',
+    'hero.title':  'Your City Is a<br><span class="accent">Treasure Map</span>',
+    'hero.sub':    'Mystigo turns real streets into a giant treasure hunt. Walk from point to point, solve enigmas in front of real heritage, and climb the world leaderboard. Escape room meets Pokémon GO.',
+    'hero.scroll': 'Follow the trail',
 
-    'store.hero.play.sub':  'Available on',
-    'store.hero.apple.sub': 'Download on the',
+    'store.play.sub':  'Available on',
+    'store.apple.sub': 'Coming soon on',
 
-    'strip.1': '🗺️ Explore the City',
-    'strip.2': '🔍 Solve Enigmas',
-    'strip.3': '🏆 Climb the Leaderboard',
-    'strip.4': '✨ Discover Heritage',
+    'step.word': 'Step',
 
-    'features.label': 'What awaits you',
-    'features.title': 'Every street holds a secret',
-    'features.body':  'Mystigo transforms your city into a living adventure. Whether you\'re a tourist or a local, there\'s always something to discover around the next corner.',
+    's1.title': 'Choose your quest',
+    's1.body':  'Browse curated itineraries by city or distance — each one a chain of mysterious points of interest created by the community. No account needed to explore the catalog.',
+    'it1.name': 'Mysteries of the Old Town',  'it1.meta': '7 steps · 2.4 km',
+    'it2.name': 'Fountains & Legends',        'it2.meta': '5 steps · 1.8 km',
+    'it3.name': 'Ghosts of the Citadel',      'it3.meta': '9 steps · 3.1 km',
 
-    'f1.title': 'Explore',
-    'f1.body':  'Walk to real-world points of interest hidden on a fuzzy map. The exact location reveals itself only when you\'re within 5 metres.',
-    'f2.title': 'Solve Enigmas',
-    'f2.body':  'Face 8 types of challenges: riddles, QR codes, compass headings, AI camera scans, photo overlays and more. Clues cost points — use them wisely.',
-    'f3.title': 'Compete',
-    'f3.body':  'Every attempt counts. Score well on each itinerary to climb the global leaderboard and earn your rank from Bronze to Platinum.',
-    'f4.title': 'Discover',
-    'f4.body':  'Passively collect heritage sites — cafés, castles, fountains, monuments — as you go about your day. Background detection works even when the app is closed.',
+    's2.title': 'Walk toward the unknown',
+    's2.body':  'The map never gives away the exact spot — only a fuzzy search zone and a clue. Follow the streets, watch the distance shrink… the point only reveals itself once you are a few metres away.',
+    'm2.step':  'STEP 2/7',
+    'm2.label': 'Look for',
+    'm2.hint':  'A gorgon lion’s head',
+    'm2.dist':  '700 m from the point',
+    'mock.home': 'Home', 'mock.map': 'Map', 'mock.list': 'List', 'mock.profile': 'Profile',
 
-    'how.label': 'The game loop',
-    'how.title': 'How it works',
-    'how.body':  'A complete adventure from first tap to final ranking.',
+    's3.title': 'Solve the enigma',
+    's3.body':  'Every discovered point unlocks a challenge about the place right in front of you — eight formats, from riddles to QR codes, compass headings and AI camera scans. Careful: wrong answers and hints cost points.',
+    'm3.step':  'STEP 3/7',
+    'm3.title': 'A gorgon lion’s head',
+    'm3.q':     'How many lion heads guard the fountain?',
+    'm3.ph':    'Your answer…',
+    'm3.btn':   'Validate',
+    'm3.hint':  'Hint · −5 pts',
+    'e1': 'Multiple Choice', 'e2': 'Free Text',       'e3': 'Numeric',        'e4': 'QR Code Scan',
+    'e5': 'Sequence',        'e6': 'Compass Heading', 'e7': 'AI Camera Scan', 'e8': 'Photo Overlay',
 
-    's1.title': 'Browse itineraries',   's1.body': 'Discover curated routes by city or proximity. No account needed to explore the catalog.',
-    's2.title': 'Start a trip',         's2.body': 'Walk to the departure point — a geofence trigger marks you ready. The adventure begins.',
-    's3.title': 'Navigate the map',     's3.body': 'The map reveals one POI at a time as a fuzzy search circle. Only proximity reveals the truth.',
-    's4.title': 'Solve the enigma',     's4.body': 'Each discovered POI unlocks a unique challenge. Wrong answers and clue requests cost points.',
-    's5.title': 'Take the final quiz',  's5.body': 'After the last POI, a post-trip quiz tests your knowledge of everything you encountered.',
-    's6.title': 'Earn your rank',       's6.body': 'Your score is calculated and your position on the global leaderboard updates in real time.',
+    's4.title': 'Survive the final quiz',
+    's4.body':  'At the end of the route, one last quiz tests what you actually noticed along the way. The best explorers read the city, not just the map.',
+    'q.label':  'Final quiz · question 3/5',
+    'q.q':      'In what year was the fountain built?',
 
-    'enigmas.label': '8 challenge types',
-    'enigmas.title': 'No two enigmas are the same',
-    'enigmas.body':  'Authors can combine multiple enigma formats in a single itinerary to keep every step surprising.',
-    'e1': 'Multiple Choice', 'e2': 'Free Text',       'e3': 'Numeric',       'e4': 'QR Code Scan',
-    'e5': 'Sequence',        'e6': 'Compass Heading', 'e7': 'AI Camera Scan','e8': 'Photo Overlay',
+    's5.title': 'Keep discovering between quests',
+    's5.body':  'Discovery mode quietly watches for heritage around you — fountains, castles, cafés, monuments — and notifies you when you pass within 15 metres, even with the app closed. Photograph the site to validate it and grow your city’s shared map.',
+    'toast.title': 'Heritage nearby!',
+    'toast.body':  'Fountain of the Lions — 12 m',
 
-    'disc.label': 'Discovery mode',
-    'disc.title': 'Your city, always alive',
-    'disc.body1': 'Between adventures, Mystigo quietly watches for nearby heritage sites — cafés, castles, fountains, monuments — and notifies you when you pass within 15 metres. Even when the app is closed.',
-    'disc.body2': 'Photograph the site to validate it, earn discovery points, and help grow a shared heritage map of your city. Approved POIs award bonus ranking points.',
+    's6.title': 'Climb the ranks',
+    's6.body':  'Every finished trip, every solved enigma, every validated discovery earns leaderboard points. Rise from Bronze to Platinum — the city holds no secrets from a Platinum explorer.',
+    'tier1.name': 'Bronze',   'tier1.pts': 'Starting rank',
+    'tier2.name': 'Silver',   'tier2.pts': '500+ points',
+    'tier3.name': 'Gold',     'tier3.pts': '2,000+ points',
+    'tier4.name': 'Platinum', 'tier4.pts': '10,000+ points',
 
-    'tiers.label': 'Ranking system',
-    'tiers.title': 'Rise through the ranks',
-    'tiers.body':  'Every completed trip, every correct answer, every discovered heritage site earns you points and moves you up through four prestige tiers.',
-    'tier1.name': 'Bronze',   'tier1.body': 'Starting rank. Every explorer begins here.',
-    'tier2.name': 'Silver',   'tier2.body': '500+ points. A seasoned city wanderer.',
-    'tier3.name': 'Gold',     'tier3.body': '2 000+ points. A master of the streets.',
-    'tier4.name': 'Platinum', 'tier4.body': '10 000+ points. The city holds no secrets from you.',
-
-    'langs.label': 'Available in',
-    'langs.title': 'Explore in your language',
-
-    'dl.label':     'Get the app',
-    'dl.title':     'Ready to explore?',
-    'dl.body':      'Download Mystigo and start your first adventure today. Available on Android, coming soon on iOS.',
+    'dl.kicker':    '✕ marks the spot',
+    'dl.title':     'The treasure? Your own city.',
+    'dl.body':      'Download Mystigo and start your first quest today. Free on Android — coming soon to iOS.',
     'dl.play.sub':  'Get it on',
     'dl.apple.sub': 'Coming soon on',
 
+    'langs.title': 'Explore in your language',
+
     'footer.terms':   'Terms & Services',
     'footer.privacy': 'Privacy Policy',
-    'footer.copy':    '© 2025 Mystigo. All rights reserved.',
+    'footer.copy':    '© 2026 Mystigo. All rights reserved.',
   },
 
   fr: {
-    'nav.features': 'Fonctionnalités',
-    'nav.how': 'Comment ça marche',
-    'nav.download': 'Télécharger',
-    'nav.terms': 'CGU',
+    'nav.adventure': 'L’Aventure',
+    'nav.trail':     'Le Sentier',
+    'nav.download':  'Télécharger',
+    'nav.terms':     'CGU',
 
-    'hero.badge': 'Exploration Urbaine Gamifiée',
-    'hero.title': 'La Ville Est<br>Votre <span class="accent">Terrain de Jeu</span>',
-    'hero.subtitle': 'Marchez vers des points d\'intérêt réels, résolvez des énigmes, découvrez le patrimoine caché et affrontez vos rivaux dans un classement mondial. Un escape room rencontre Pokémon GO.',
+    'hero.kicker': 'Une chasse au trésor grandeur nature',
+    'hero.title':  'Votre Ville Est une<br><span class="accent">Carte au Trésor</span>',
+    'hero.sub':    'Mystigo transforme les vraies rues en chasse au trésor géante. Marchez de point en point, résolvez des énigmes devant le patrimoine réel et grimpez au classement mondial. Un escape room rencontre Pokémon GO.',
+    'hero.scroll': 'Suivez le sentier',
 
-    'store.hero.play.sub':  'Disponible sur',
-    'store.hero.apple.sub': 'Télécharger sur',
+    'store.play.sub':  'Disponible sur',
+    'store.apple.sub': 'Bientôt sur',
 
-    'strip.1': '🗺️ Explorer la Ville',
-    'strip.2': '🔍 Résoudre des Énigmes',
-    'strip.3': '🏆 Grimper au Classement',
-    'strip.4': '✨ Découvrir le Patrimoine',
+    'step.word': 'Étape',
 
-    'features.label': 'Ce qui vous attend',
-    'features.title': 'Chaque rue cache un secret',
-    'features.body':  'Mystigo transforme votre ville en une aventure vivante. Que vous soyez touriste ou local, il y a toujours quelque chose à découvrir au prochain coin de rue.',
+    's1.title': 'Choisissez votre quête',
+    's1.body':  'Parcourez des itinéraires sélectionnés par ville ou par distance — chacun est une chaîne de points d’intérêt mystérieux créés par la communauté. Aucun compte requis pour explorer le catalogue.',
+    'it1.name': 'Mystères du Vieux Quartier', 'it1.meta': '7 étapes · 2,4 km',
+    'it2.name': 'Fontaines & Légendes',       'it2.meta': '5 étapes · 1,8 km',
+    'it3.name': 'Fantômes de la Citadelle',   'it3.meta': '9 étapes · 3,1 km',
 
-    'f1.title': 'Explorer',
-    'f1.body':  'Marchez vers des points d\'intérêt cachés sur une carte floue. L\'emplacement exact se révèle uniquement à 5 mètres.',
-    'f2.title': 'Résoudre des Énigmes',
-    'f2.body':  'Affrontez 8 types de défis : énigmes, QR codes, caps de boussole, scans IA, superpositions photo... Les indices coûtent des points — utilisez-les judicieusement.',
-    'f3.title': 'Rivaliser',
-    'f3.body':  'Chaque tentative compte. Performez sur chaque itinéraire pour gravir le classement mondial et gagner votre rang du Bronze au Platine.',
-    'f4.title': 'Découvrir',
-    'f4.body':  'Collectez passivement des sites patrimoniaux — cafés, châteaux, fontaines, monuments — au fil de votre journée. La détection fonctionne même quand l\'appli est fermée.',
+    's2.title': 'Marchez vers l’inconnu',
+    's2.body':  'La carte ne révèle jamais l’emplacement exact — seulement une zone de recherche floue et un indice. Suivez les rues, regardez la distance fondre… le point ne se dévoile qu’à quelques mètres.',
+    'm2.step':  'ÉTAPE 2/7',
+    'm2.label': 'Cherchez',
+    'm2.hint':  'Une tête de lion gorgone',
+    'm2.dist':  '700 m du point',
+    'mock.home': 'Accueil', 'mock.map': 'Carte', 'mock.list': 'Liste', 'mock.profile': 'Profil',
 
-    'how.label': 'La boucle de jeu',
-    'how.title': 'Comment ça marche',
-    'how.body':  'Une aventure complète du premier tap au classement final.',
+    's3.title': 'Résolvez l’énigme',
+    's3.body':  'Chaque point découvert déverrouille un défi lié au lieu qui vous fait face — huit formats, des devinettes aux QR codes, caps de boussole et scans caméra IA. Attention : mauvaises réponses et indices coûtent des points.',
+    'm3.step':  'ÉTAPE 3/7',
+    'm3.title': 'Une tête de lion gorgone',
+    'm3.q':     'Combien de têtes de lion gardent la fontaine ?',
+    'm3.ph':    'Votre réponse…',
+    'm3.btn':   'Valider',
+    'm3.hint':  'Indice · −5 pts',
+    'e1': 'Choix Multiple', 'e2': 'Texte Libre',      'e3': 'Numérique',       'e4': 'Scan QR Code',
+    'e5': 'Séquence',       'e6': 'Cap de Boussole',  'e7': 'Scan Caméra IA',  'e8': 'Superposition Photo',
 
-    's1.title': 'Parcourir les itinéraires', 's1.body': 'Découvrez des parcours curatés par ville ou proximité. Aucun compte requis pour explorer le catalogue.',
-    's2.title': 'Démarrer un voyage',        's2.body': 'Marchez jusqu\'au point de départ — un déclencheur de géofence vous indique prêt. L\'aventure commence.',
-    's3.title': 'Naviguer sur la carte',     's3.body': 'La carte révèle un point d\'intérêt à la fois sous forme de cercle flou. Seule la proximité révèle la vérité.',
-    's4.title': 'Résoudre l\'énigme',        's4.body': 'Chaque POI découvert déverrouille un défi unique. Les mauvaises réponses et demandes d\'indices coûtent des points.',
-    's5.title': 'Passer le quiz final',      's5.body': 'Après le dernier point d\'intérêt, un quiz de fin de voyage teste vos connaissances sur tout ce que vous avez rencontré.',
-    's6.title': 'Gagner votre rang',         's6.body': 'Votre score est calculé et votre position dans le classement mondial se met à jour en temps réel.',
+    's4.title': 'Survivez au quiz final',
+    's4.body':  'À la fin du parcours, un dernier quiz teste ce que vous avez vraiment observé en chemin. Les meilleurs explorateurs lisent la ville, pas seulement la carte.',
+    'q.label':  'Quiz final · question 3/5',
+    'q.q':      'En quelle année la fontaine fut-elle bâtie ?',
 
-    'enigmas.label': '8 types de défis',
-    'enigmas.title': 'Aucune énigme ne se ressemble',
-    'enigmas.body':  'Les auteurs peuvent combiner plusieurs formats d\'énigmes dans un même itinéraire pour que chaque étape soit une surprise.',
-    'e1': 'Choix Multiple',    'e2': 'Texte Libre',       'e3': 'Numérique',      'e4': 'Scan QR Code',
-    'e5': 'Séquence',          'e6': 'Cap de Boussole',   'e7': 'Scan Caméra IA', 'e8': 'Superposition Photo',
+    's5.title': 'Découvrez, même entre deux quêtes',
+    's5.body':  'Le mode découverte veille discrètement sur le patrimoine autour de vous — fontaines, châteaux, cafés, monuments — et vous notifie quand vous passez à moins de 15 mètres, même appli fermée. Photographiez le site pour le valider et enrichir la carte partagée de votre ville.',
+    'toast.title': 'Patrimoine à proximité !',
+    'toast.body':  'Fontaine des Lions — 12 m',
 
-    'disc.label': 'Mode découverte',
-    'disc.title': 'Ta ville, toujours vivante',
-    'disc.body1': 'Entre les aventures, Mystigo surveille discrètement les sites patrimoniaux à proximité — cafés, châteaux, fontaines, monuments — et vous avertit quand vous passez à 15 mètres. Même quand l\'appli est fermée.',
-    'disc.body2': 'Photographiez le site pour le valider, gagnez des points de découverte et contribuez à cartographier le patrimoine de votre ville. Les POI approuvés accordent des points bonus.',
+    's6.title': 'Gravissez les rangs',
+    's6.body':  'Chaque voyage terminé, chaque énigme résolue, chaque découverte validée rapporte des points au classement. Montez du Bronze au Platine — la ville n’a plus de secrets pour un explorateur Platine.',
+    'tier1.name': 'Bronze',  'tier1.pts': 'Rang de départ',
+    'tier2.name': 'Argent',  'tier2.pts': '500+ points',
+    'tier3.name': 'Or',      'tier3.pts': '2 000+ points',
+    'tier4.name': 'Platine', 'tier4.pts': '10 000+ points',
 
-    'tiers.label': 'Système de classement',
-    'tiers.title': 'Gravissez les échelons',
-    'tiers.body':  'Chaque voyage terminé, chaque bonne réponse, chaque site patrimonial découvert vous rapporte des points dans quatre niveaux de prestige.',
-    'tier1.name': 'Bronze',  'tier1.body': 'Rang de départ. Chaque explorateur commence ici.',
-    'tier2.name': 'Argent',  'tier2.body': '500+ points. Un vagabond urbain aguerri.',
-    'tier3.name': 'Or',      'tier3.body': '2 000+ points. Un maître des rues.',
-    'tier4.name': 'Platine', 'tier4.body': '10 000+ points. La ville n\'a plus de secrets pour vous.',
-
-    'langs.label': 'Disponible en',
-    'langs.title': 'Explorez dans votre langue',
-
-    'dl.label':     'Télécharger l\'appli',
-    'dl.title':     'Prêt à explorer ?',
-    'dl.body':      'Téléchargez Mystigo et commencez votre première aventure aujourd\'hui. Disponible sur Android, bientôt sur iOS.',
+    'dl.kicker':    '✕ marque le trésor',
+    'dl.title':     'Le trésor ? Votre propre ville.',
+    'dl.body':      'Téléchargez Mystigo et lancez votre première quête dès aujourd’hui. Gratuit sur Android — bientôt sur iOS.',
     'dl.play.sub':  'Télécharger sur',
     'dl.apple.sub': 'Bientôt sur',
 
+    'langs.title': 'Explorez dans votre langue',
+
     'footer.terms':   'CGU',
     'footer.privacy': 'Politique de confidentialité',
-    'footer.copy':    '© 2025 Mystigo. Tous droits réservés.',
+    'footer.copy':    '© 2026 Mystigo. Tous droits réservés.',
   },
 
   pt: {
-    'nav.features': 'Funcionalidades',
-    'nav.how': 'Como funciona',
-    'nav.download': 'Baixar',
-    'nav.terms': 'Termos',
+    'nav.adventure': 'A Aventura',
+    'nav.trail':     'A Trilha',
+    'nav.download':  'Baixar',
+    'nav.terms':     'Termos',
 
-    'hero.badge': 'Exploração Urbana Gamificada',
-    'hero.title': 'A Cidade É<br>O Seu <span class="accent">Playground</span>',
-    'hero.subtitle': 'Caminhe até pontos de interesse reais, resolva enigmas, descubra patrimônio oculto e compita em um ranking global. Escape room encontra Pokémon GO.',
+    'hero.kicker': 'Uma caça ao tesouro no mundo real',
+    'hero.title':  'Sua Cidade É um<br><span class="accent">Mapa do Tesouro</span>',
+    'hero.sub':    'O Mystigo transforma ruas reais numa caça ao tesouro gigante. Caminhe de ponto em ponto, resolva enigmas diante do patrimônio real e suba no ranking mundial. Escape room encontra Pokémon GO.',
+    'hero.scroll': 'Siga a trilha',
 
-    'store.hero.play.sub':  'Disponível em',
-    'store.hero.apple.sub': 'Baixar na',
+    'store.play.sub':  'Disponível em',
+    'store.apple.sub': 'Em breve na',
 
-    'strip.1': '🗺️ Explorar a Cidade',
-    'strip.2': '🔍 Resolver Enigmas',
-    'strip.3': '🏆 Escalar o Ranking',
-    'strip.4': '✨ Descobrir Patrimônio',
+    'step.word': 'Etapa',
 
-    'features.label': 'O que te espera',
-    'features.title': 'Cada rua esconde um segredo',
-    'features.body':  'Mystigo transforma sua cidade numa aventura viva. Seja turista ou morador, há sempre algo para descobrir na próxima esquina.',
+    's1.title': 'Escolha sua missão',
+    's1.body':  'Explore itinerários selecionados por cidade ou distância — cada um é uma sequência de pontos de interesse misteriosos criados pela comunidade. Nenhuma conta é necessária para navegar pelo catálogo.',
+    'it1.name': 'Mistérios do Centro Histórico', 'it1.meta': '7 etapas · 2,4 km',
+    'it2.name': 'Fontes & Lendas',               'it2.meta': '5 etapas · 1,8 km',
+    'it3.name': 'Fantasmas da Cidadela',         'it3.meta': '9 etapas · 3,1 km',
 
-    'f1.title': 'Explorar',
-    'f1.body':  'Caminhe até pontos de interesse escondidos num mapa difuso. A localização exata só se revela a 5 metros.',
-    'f2.title': 'Resolver Enigmas',
-    'f2.body':  'Enfrente 8 tipos de desafios: charadas, QR codes, direções de bússola, scans por IA, sobreposições de fotos e mais. Pistas custam pontos — use-as com sabedoria.',
-    'f3.title': 'Competir',
-    'f3.body':  'Cada tentativa conta. Pontue bem em cada itinerário para subir no ranking global e conquistar sua posição do Bronze ao Platina.',
-    'f4.title': 'Descobrir',
-    'f4.body':  'Colete passivamente locais de patrimônio — cafés, castelos, fontes, monumentos — enquanto segue sua rotina. A detecção em segundo plano funciona mesmo com o app fechado.',
+    's2.title': 'Caminhe rumo ao desconhecido',
+    's2.body':  'O mapa nunca entrega o local exato — apenas uma zona de busca difusa e uma pista. Siga as ruas, veja a distância diminuir… o ponto só se revela quando você está a poucos metros.',
+    'm2.step':  'ETAPA 2/7',
+    'm2.label': 'Procure',
+    'm2.hint':  'Uma cabeça de leão górgona',
+    'm2.dist':  '700 m do ponto',
+    'mock.home': 'Início', 'mock.map': 'Mapa', 'mock.list': 'Lista', 'mock.profile': 'Perfil',
 
-    'how.label': 'O ciclo do jogo',
-    'how.title': 'Como funciona',
-    'how.body':  'Uma aventura completa desde o primeiro toque até a classificação final.',
+    's3.title': 'Resolva o enigma',
+    's3.body':  'Cada ponto descoberto desbloqueia um desafio sobre o lugar à sua frente — oito formatos, de charadas a QR codes, direções de bússola e scans por IA. Cuidado: respostas erradas e dicas custam pontos.',
+    'm3.step':  'ETAPA 3/7',
+    'm3.title': 'Uma cabeça de leão górgona',
+    'm3.q':     'Quantas cabeças de leão guardam a fonte?',
+    'm3.ph':    'Sua resposta…',
+    'm3.btn':   'Validar',
+    'm3.hint':  'Dica · −5 pts',
+    'e1': 'Múltipla Escolha', 'e2': 'Texto Livre',        'e3': 'Numérico',     'e4': 'Scan QR Code',
+    'e5': 'Sequência',        'e6': 'Direção de Bússola', 'e7': 'Scan por IA',  'e8': 'Sobreposição de Foto',
 
-    's1.title': 'Explorar itinerários',   's1.body': 'Descubra rotas selecionadas por cidade ou proximidade. Nenhuma conta necessária para explorar o catálogo.',
-    's2.title': 'Iniciar uma viagem',     's2.body': 'Caminhe até o ponto de partida — um gatilho de geofence marca sua chegada. A aventura começa.',
-    's3.title': 'Navegar pelo mapa',      's3.body': 'O mapa revela um POI por vez como um círculo difuso. Apenas a proximidade revela a verdade.',
-    's4.title': 'Resolver o enigma',      's4.body': 'Cada POI descoberto desbloqueia um desafio único. Respostas erradas e pedidos de dicas custam pontos.',
-    's5.title': 'Fazer o quiz final',     's5.body': 'Após o último POI, um quiz pós-viagem testa seu conhecimento sobre tudo que você encontrou.',
-    's6.title': 'Conquistar seu posto',   's6.body': 'Sua pontuação é calculada e sua posição no ranking global atualiza em tempo real.',
+    's4.title': 'Sobreviva ao quiz final',
+    's4.body':  'No fim da rota, um último quiz testa o que você realmente notou pelo caminho. Os melhores exploradores leem a cidade, não apenas o mapa.',
+    'q.label':  'Quiz final · pergunta 3/5',
+    'q.q':      'Em que ano a fonte foi construída?',
 
-    'enigmas.label': '8 tipos de desafios',
-    'enigmas.title': 'Nenhum enigma é igual',
-    'enigmas.body':  'Os autores podem combinar múltiplos formatos de enigma num único itinerário para manter cada etapa surpreendente.',
-    'e1': 'Múltipla Escolha',   'e2': 'Texto Livre',         'e3': 'Numérico',      'e4': 'Scan QR Code',
-    'e5': 'Sequência',          'e6': 'Direção de Bússola',  'e7': 'Scan por IA',   'e8': 'Sobreposição de Foto',
+    's5.title': 'Continue descobrindo entre missões',
+    's5.body':  'O modo descoberta monitora silenciosamente o patrimônio ao seu redor — fontes, castelos, cafés, monumentos — e avisa quando você passa a menos de 15 metros, mesmo com o app fechado. Fotografe o local para validá-lo e ampliar o mapa compartilhado da sua cidade.',
+    'toast.title': 'Patrimônio por perto!',
+    'toast.body':  'Fonte dos Leões — 12 m',
 
-    'disc.label': 'Modo descoberta',
-    'disc.title': 'Sua cidade, sempre viva',
-    'disc.body1': 'Entre aventuras, o Mystigo monitora silenciosamente locais de patrimônio próximos — cafés, castelos, fontes, monumentos — e notifica você ao passar a 15 metros. Mesmo com o app fechado.',
-    'disc.body2': 'Fotografe o local para validá-lo, ganhe pontos de descoberta e ajude a construir um mapa compartilhado do patrimônio da sua cidade. POIs aprovados concedem pontos bônus.',
+    's6.title': 'Suba de posto',
+    's6.body':  'Cada viagem concluída, cada enigma resolvido, cada descoberta validada rende pontos no ranking. Suba do Bronze ao Platina — a cidade não tem segredos para um explorador Platina.',
+    'tier1.name': 'Bronze',  'tier1.pts': 'Posto inicial',
+    'tier2.name': 'Prata',   'tier2.pts': '500+ pontos',
+    'tier3.name': 'Ouro',    'tier3.pts': '2.000+ pontos',
+    'tier4.name': 'Platina', 'tier4.pts': '10.000+ pontos',
 
-    'tiers.label': 'Sistema de ranking',
-    'tiers.title': 'Suba nas classificações',
-    'tiers.body':  'Cada viagem concluída, cada resposta correta, cada local de patrimônio descoberto lhe rende pontos pelos quatro níveis de prestígio.',
-    'tier1.name': 'Bronze',  'tier1.body': 'Nível inicial. Todo explorador começa aqui.',
-    'tier2.name': 'Prata',   'tier2.body': '500+ pontos. Um viajante urbano experiente.',
-    'tier3.name': 'Ouro',    'tier3.body': '2 000+ pontos. Um mestre das ruas.',
-    'tier4.name': 'Platina', 'tier4.body': '10 000+ pontos. A cidade não guarda mais segredos para você.',
-
-    'langs.label': 'Disponível em',
-    'langs.title': 'Explore no seu idioma',
-
-    'dl.label':     'Baixar o app',
-    'dl.title':     'Pronto para explorar?',
-    'dl.body':      'Baixe o Mystigo e comece sua primeira aventura hoje. Disponível no Android, em breve no iOS.',
+    'dl.kicker':    '✕ marca o tesouro',
+    'dl.title':     'O tesouro? Sua própria cidade.',
+    'dl.body':      'Baixe o Mystigo e comece sua primeira missão hoje. Grátis no Android — em breve no iOS.',
     'dl.play.sub':  'Baixar em',
-    'dl.apple.sub': 'Em breve em',
+    'dl.apple.sub': 'Em breve na',
+
+    'langs.title': 'Explore no seu idioma',
 
     'footer.terms':   'Termos & Serviços',
     'footer.privacy': 'Política de Privacidade',
-    'footer.copy':    '© 2025 Mystigo. Todos os direitos reservados.',
+    'footer.copy':    '© 2026 Mystigo. Todos os direitos reservados.',
   },
 
   zh: {
-    'nav.features': '功能',
-    'nav.how': '玩法介绍',
-    'nav.download': '下载',
-    'nav.terms': '条款',
+    'nav.adventure': '冒险之旅',
+    'nav.trail':     '探索路线',
+    'nav.download':  '下载',
+    'nav.terms':     '条款',
 
-    'hero.badge': '游戏化城市探索',
-    'hero.title': '城市就是<br>你的<span class="accent">游乐场</span>',
-    'hero.subtitle': '步行前往真实世界的兴趣点，解开谜题，探索隐藏遗产，在全球排行榜上一决高下。密室逃脱遇上 Pokémon GO。',
+    'hero.kicker': '一场真实世界的寻宝之旅',
+    'hero.title':  '你的城市就是一张<br><span class="accent">藏宝图</span>',
+    'hero.sub':    'Mystigo 将真实街道变成一场巨大的寻宝游戏。步行穿梭于各个地点之间，在真实古迹前解开谜题，登上全球排行榜。密室逃脱遇上 Pokémon GO。',
+    'hero.scroll': '沿着小路前进',
 
-    'store.hero.play.sub':  '立即下载',
-    'store.hero.apple.sub': '下载于',
+    'store.play.sub':  '立即下载',
+    'store.apple.sub': '即将推出',
 
-    'strip.1': '🗺️ 探索城市',
-    'strip.2': '🔍 解开谜题',
-    'strip.3': '🏆 登顶排行榜',
-    'strip.4': '✨ 发现遗产',
+    'step.word': '步骤',
 
-    'features.label': '等待您的精彩',
-    'features.title': '每条街道都藏着秘密',
-    'features.body':  'Mystigo 将您的城市变成一场鲜活的冒险。无论您是游客还是本地人，下一个转角总有新的发现。',
+    's1.title': '选择你的任务',
+    's1.body':  '按城市或距离浏览精选路线——每条路线都是由社区创建的一连串神秘兴趣点。无需账号即可浏览目录。',
+    'it1.name': '老城区之谜',   'it1.meta': '7 站 · 2.4 公里',
+    'it2.name': '喷泉与传说',   'it2.meta': '5 站 · 1.8 公里',
+    'it3.name': '城堡的幽灵',   'it3.meta': '9 站 · 3.1 公里',
 
-    'f1.title': '探索',
-    'f1.body':  '步行前往模糊地图上隐藏的兴趣点。精确位置仅在您距离5米内才会显示。',
-    'f2.title': '解谜',
-    'f2.body':  '面对8种挑战类型：谜语、二维码、指南针方向、AI摄像头扫描、照片叠加等。使用线索会扣分——请谨慎使用。',
-    'f3.title': '竞争',
-    'f3.body':  '每一次尝试都很重要。在每条路线上表现出色，攀登全球排行榜，赢得从青铜到白金的荣誉头衔。',
-    'f4.title': '发现',
-    'f4.body':  '在日常生活中被动收集遗产地点——咖啡馆、城堡、喷泉、纪念碑。即使应用关闭，后台检测仍然有效。',
+    's2.title': '走向未知',
+    's2.body':  '地图绝不会直接告诉你确切位置——只有一个模糊的搜索圈和一条线索。沿着街道前行，看着距离缩短……只有走到几米之内，地点才会显现。',
+    'm2.step':  '步骤 2/7',
+    'm2.label': '寻找',
+    'm2.hint':  '一个戈尔贡狮头',
+    'm2.dist':  '距目标 700 米',
+    'mock.home': '首页', 'mock.map': '地图', 'mock.list': '列表', 'mock.profile': '我的',
 
-    'how.label': '游戏循环',
-    'how.title': '玩法介绍',
-    'how.body':  '从第一次点击到最终排名的完整冒险。',
+    's3.title': '解开谜题',
+    's3.body':  '每个发现的地点都会解锁一个与眼前场所相关的挑战——八种形式，从谜语到二维码、指南针方向和 AI 摄像头扫描。注意：答错和使用提示都会扣分。',
+    'm3.step':  '步骤 3/7',
+    'm3.title': '一个戈尔贡狮头',
+    'm3.q':     '有多少个狮头守护着这座喷泉？',
+    'm3.ph':    '你的答案……',
+    'm3.btn':   '验证',
+    'm3.hint':  '提示 · −5 分',
+    'e1': '多项选择', 'e2': '自由文本',   'e3': '数字',          'e4': '二维码扫描',
+    'e5': '序列',     'e6': '指南针方向', 'e7': 'AI 摄像头扫描', 'e8': '照片叠加',
 
-    's1.title': '浏览路线',   's1.body': '按城市或距离发现精选路线。无需账号即可浏览目录。',
-    's2.title': '开始旅程',   's2.body': '步行到出发点——地理围栏触发器标记您准备就绪。冒险开始。',
-    's3.title': '导航地图',   's3.body': '地图以模糊搜索圆圈一次显示一个兴趣点。只有靠近才能揭示真相。',
-    's4.title': '解开谜题',   's4.body': '每个发现的兴趣点解锁一个独特挑战。错误答案和请求线索都会扣分。',
-    's5.title': '完成最终测验', 's5.body': '在最后一个兴趣点之后，旅行后测验将测试您对一路所见的认知。',
-    's6.title': '赢得排名',   's6.body': '您的分数实时计算，在全球排行榜上的位置同步更新。',
+    's4.title': '通过最终测验',
+    's4.body':  '路线结束时，最后一个测验将检验你沿途真正注意到了什么。最优秀的探险家读懂的是城市，而不仅仅是地图。',
+    'q.label':  '最终测验 · 第 3/5 题',
+    'q.q':      '这座喷泉建于哪一年？',
 
-    'enigmas.label': '8种挑战类型',
-    'enigmas.title': '没有两个谜题是相同的',
-    'enigmas.body':  '作者可以在单一路线中组合多种谜题格式，让每一步都充满惊喜。',
-    'e1': '多项选择', 'e2': '自由文本',     'e3': '数字',         'e4': '二维码扫描',
-    'e5': '序列',     'e6': '指南针方向',   'e7': 'AI摄像头扫描', 'e8': '照片叠加',
+    's5.title': '任务之间，继续发现',
+    's5.body':  '发现模式悄悄留意你身边的古迹——喷泉、城堡、咖啡馆、纪念碑——当你经过 15 米范围内时通知你，即使应用已关闭。拍照验证地点，共同丰富你所在城市的共享地图。',
+    'toast.title': '附近有古迹！',
+    'toast.body':  '狮子喷泉 — 12 米',
 
-    'disc.label': '发现模式',
-    'disc.title': '您的城市，始终充满活力',
-    'disc.body1': '在冒险之间，Mystigo 悄悄监视附近的遗产地点——咖啡馆、城堡、喷泉、纪念碑——当您经过15米范围内时发送通知。即使应用关闭也有效。',
-    'disc.body2': '拍摄地点进行验证，赚取发现积分，帮助建立城市的共享遗产地图。已批准的兴趣点可获得额外排名积分。',
+    's6.title': '晋升段位',
+    's6.body':  '每次完成旅程、每个解开的谜题、每次验证的发现都会赢得排行榜积分。从青铜升至白金——城市对白金探险家再无秘密。',
+    'tier1.name': '青铜', 'tier1.pts': '起始段位',
+    'tier2.name': '白银', 'tier2.pts': '500+ 积分',
+    'tier3.name': '黄金', 'tier3.pts': '2,000+ 积分',
+    'tier4.name': '白金', 'tier4.pts': '10,000+ 积分',
 
-    'tiers.label': '排名系统',
-    'tiers.title': '晋升排名',
-    'tiers.body':  '每次完成的旅程、每个正确答案、每个发现的遗产地点都为您赢得积分，在四个荣誉等级中不断提升。',
-    'tier1.name': '青铜', 'tier1.body': '起始等级。每个探险家从这里开始。',
-    'tier2.name': '白银', 'tier2.body': '500+ 积分。经验丰富的城市漫游者。',
-    'tier3.name': '黄金', 'tier3.body': '2000+ 积分。街道的主宰。',
-    'tier4.name': '白金', 'tier4.body': '10000+ 积分。城市对您无密可保。',
-
-    'langs.label': '支持语言',
-    'langs.title': '用您的语言探索',
-
-    'dl.label':     '获取应用',
-    'dl.title':     '准备好探索了吗？',
-    'dl.body':      '立即下载 Mystigo，开始您的第一次冒险。Android 版本已上线，iOS 版本即将推出。',
+    'dl.kicker':    '✕ 标记宝藏所在',
+    'dl.title':     '宝藏是什么？是你自己的城市。',
+    'dl.body':      '立即下载 Mystigo，今天就开始你的第一个任务。Android 免费下载，iOS 即将推出。',
     'dl.play.sub':  '下载至',
     'dl.apple.sub': '即将推出',
 
+    'langs.title': '用你的语言探索',
+
     'footer.terms':   '服务条款',
     'footer.privacy': '隐私政策',
-    'footer.copy':    '© 2025 Mystigo. 保留所有权利。',
+    'footer.copy':    '© 2026 Mystigo. 保留所有权利。',
   },
 };
 
 const HTML_LANG = { en: 'en', fr: 'fr', pt: 'pt-BR', zh: 'zh-CN' };
 const PAGE_TITLE = {
-  en: 'Mystigo — The City Is Your Playground',
-  fr: 'Mystigo — La Ville Est Votre Terrain de Jeu',
-  pt: 'Mystigo — A Cidade É O Seu Playground',
-  zh: 'Mystigo — 城市就是你的游乐场',
+  en: 'Mystigo — Your City Is a Treasure Map',
+  fr: 'Mystigo — Votre Ville Est une Carte au Trésor',
+  pt: 'Mystigo — Sua Cidade É um Mapa do Tesouro',
+  zh: 'Mystigo — 你的城市就是一张藏宝图',
 };
-
-let currentLang = 'en';
 
 function applyLang(code) {
   const t = T[code];
@@ -1176,30 +1593,162 @@ function applyLang(code) {
   });
 
   localStorage.setItem('mystigo-lang', code);
-  currentLang = code;
+
+  // text length changed → section heights changed → rebuild the trail
+  requestAnimationFrame(buildTrail);
 }
 
 document.querySelectorAll('.lang-btn').forEach(btn => {
   btn.addEventListener('click', () => applyLang(btn.dataset.lang));
 });
 
-(function init() {
-  const saved    = localStorage.getItem('mystigo-lang');
-  const browser  = (navigator.language || '').toLowerCase();
-  let   detected = 'en';
+/* ── THE TRAIL ───────────────────────────────────────────────
+   A dotted path is drawn through every [data-trail-point] anchor.
+   An ink-drawn explorer walks along it as the visitor scrolls;
+   the travelled portion is inked in red, and each wax seal
+   lights up when the explorer reaches it.                      */
 
-  if (saved && T[saved]) {
-    detected = saved;
-  } else if (browser.startsWith('fr')) {
-    detected = 'fr';
-  } else if (browser.startsWith('pt')) {
-    detected = 'pt';
-  } else if (browser.startsWith('zh')) {
-    detected = 'zh';
+const trailSvg   = document.getElementById('trail-svg');
+const basePath   = document.getElementById('trail-base');
+const inkPath    = document.getElementById('trail-ink');
+const inkRect    = document.getElementById('inkRect');
+const traveler   = document.getElementById('traveler');
+const travFlip   = document.getElementById('traveler-flip');
+
+let samples = [];      // [{x, y, len}] along the path
+let stopsY  = [];      // {el, y} for seal activation
+
+function docPos(el) {
+  // offsetTop accumulation: immune to the reveal-animation transforms
+  let x = el.offsetWidth / 2, y = el.offsetHeight / 2, n = el;
+  while (n) { x += n.offsetLeft; y += n.offsetTop; n = n.offsetParent; }
+  return { x, y };
+}
+
+function catmullRomPath(pts) {
+  if (pts.length < 2) return '';
+  let d = `M ${pts[0].x} ${pts[0].y}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+    const c1x = p1.x + (p2.x - p0.x) / 6, c1y = p1.y + (p2.y - p0.y) / 6;
+    const c2x = p2.x - (p3.x - p1.x) / 6, c2y = p2.y - (p3.y - p1.y) / 6;
+    d += ` C ${c1x.toFixed(1)} ${c1y.toFixed(1)}, ${c2x.toFixed(1)} ${c2y.toFixed(1)}, ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`;
   }
+  return d;
+}
+
+function buildTrail() {
+  const page = document.getElementById('page');
+  const W = document.documentElement.clientWidth;
+  const H = page.scrollHeight;
+  trailSvg.setAttribute('width', W);
+  trailSvg.setAttribute('height', H);
+  trailSvg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+
+  const anchors = [...document.querySelectorAll('[data-trail-point]')];
+  if (anchors.length < 2) return;
+
+  const stops = anchors.map(docPos);
+  stopsY = anchors
+    .filter(el => el.classList.contains('trail-stop'))
+    .map(el => ({ el, y: docPos(el).y }));
+
+  // gentle extra meander between consecutive stops
+  const pts = [];
+  for (let i = 0; i < stops.length; i++) {
+    pts.push(stops[i]);
+    if (i < stops.length - 1) {
+      const a = stops[i], b = stops[i + 1];
+      const sway = Math.min(W * 0.12, 130) * (i % 2 === 0 ? 1 : -1);
+      pts.push({ x: (a.x + b.x) / 2 + sway, y: (a.y + b.y) / 2 });
+    }
+  }
+
+  const d = catmullRomPath(pts);
+  basePath.setAttribute('d', d);
+  inkPath.setAttribute('d', d);
+
+  // sample the path for scroll mapping
+  const L = basePath.getTotalLength();
+  const N = 500;
+  samples = [];
+  for (let i = 0; i <= N; i++) {
+    const len = (L * i) / N;
+    const p = basePath.getPointAtLength(len);
+    samples.push({ x: p.x, y: p.y, len });
+  }
+
+  traveler.style.display = '';
+  updateTraveler();
+}
+
+function updateTraveler() {
+  if (!samples.length) return;
+
+  const targetY = window.scrollY + window.innerHeight * 0.45;
+  const startY = samples[0].y, endY = samples[samples.length - 1].y;
+  const clampedY = Math.max(startY, Math.min(endY, targetY));
+
+  // binary search the sample closest to clampedY (path is y-monotonic enough)
+  let lo = 0, hi = samples.length - 1;
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (samples[mid].y < clampedY) lo = mid + 1; else hi = mid;
+  }
+  const i = lo;
+  const p = samples[i];
+
+  traveler.setAttribute('transform', `translate(${p.x.toFixed(1)} ${p.y.toFixed(1)})`);
+
+  // face the walking direction
+  const next = samples[Math.min(i + 3, samples.length - 1)];
+  const prev = samples[Math.max(i - 3, 0)];
+  travFlip.setAttribute('transform', next.x - prev.x < 0 ? 'scale(-1 1)' : 'scale(1 1)');
+
+  // ink the travelled portion
+  inkRect.setAttribute('height', Math.max(0, p.y + 6));
+
+  // light up reached seals
+  stopsY.forEach(s => s.el.classList.toggle('reached', p.y >= s.y - 14));
+}
+
+let scrollTick = false;
+window.addEventListener('scroll', () => {
+  if (scrollTick) return;
+  scrollTick = true;
+  requestAnimationFrame(() => { updateTraveler(); scrollTick = false; });
+}, { passive: true });
+
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(buildTrail, 150);
+});
+
+/* reveal-on-scroll */
+const revealObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('reveal'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('.step-text, .step-visual').forEach(el => revealObserver.observe(el));
+
+/* init */
+(function init() {
+  const saved   = localStorage.getItem('mystigo-lang');
+  const browser = (navigator.language || '').toLowerCase();
+  let detected  = 'en';
+
+  if (saved && T[saved])             detected = saved;
+  else if (browser.startsWith('fr')) detected = 'fr';
+  else if (browser.startsWith('pt')) detected = 'pt';
+  else if (browser.startsWith('zh')) detected = 'zh';
 
   applyLang(detected);
 })();
+
+window.addEventListener('load', buildTrail);
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(() => requestAnimationFrame(buildTrail));
+}
 </script>
 
 </body>
