@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Delete Your Account — Mystigo</title>
+  <meta name="description" content="How to delete your Mystigo account and what data is removed" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #681417;
+      --bg-warm: #E9E6DF;
+      --text-dark: #2E2E2E;
+      --text-mid: #5a5a5a;
+      --white: #FFFFFF;
+      --accent-yellow: #FFC65A;
+    }
+    body { font-family: 'Inter', sans-serif; color: var(--text-dark); background: var(--bg-warm); }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(20, 8, 10, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .nav-logo { font-family: 'MedievalSharp', serif; font-size: 1.5rem; color: var(--white); text-decoration: none; }
+    .nav-logo span { color: var(--accent-yellow); }
+    .nav-back { font-size: 0.82rem; color: rgba(255,255,255,0.6); text-decoration: none; transition: color 0.2s; }
+    .nav-back:hover { color: var(--white); }
+    main { max-width: 760px; margin: 0 auto; padding: 8rem 1.5rem 5rem; }
+    h1 { font-family: 'MedievalSharp', serif; font-size: 2.2rem; color: var(--text-dark); margin-bottom: 0.5rem; }
+    .updated { font-size: 0.8rem; color: var(--text-mid); margin-bottom: 3rem; }
+    h2 { font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 700; margin: 2.5rem 0 0.75rem; color: var(--text-dark); }
+    p, li { font-size: 0.95rem; color: var(--text-mid); line-height: 1.75; margin-bottom: 0.75rem; }
+    ol, ul { padding-left: 1.4rem; }
+    a { color: var(--primary); }
+    .card {
+      background: var(--white); border-radius: 12px; padding: 1.5rem 1.75rem;
+      margin: 1rem 0; border: 1px solid rgba(0,0,0,0.06);
+    }
+    footer {
+      background: #0e0a0b; padding: 2rem 1.5rem; text-align: center;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .footer-logo { font-family: 'MedievalSharp', serif; font-size: 1.2rem; color: var(--white); margin-bottom: 0.75rem; }
+    .footer-logo span { color: var(--accent-yellow); }
+    .footer-copy { font-size: 0.75rem; color: rgba(255,255,255,0.25); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">Myst<span>i</span>go</a>
+  <a href="/" class="nav-back">← Back to home</a>
+</nav>
+
+<main>
+  <h1>Delete Your Account</h1>
+  <p class="updated">Last updated: July 2026</p>
+
+  <p>You can permanently delete your Mystigo account and its associated data at any time. This page explains how to do it and exactly what is removed.</p>
+
+  <h2>Option 1 — Delete from within the app (recommended)</h2>
+  <div class="card">
+    <ol>
+      <li>Open the Mystigo app and sign in.</li>
+      <li>Go to the <strong>Profile</strong> tab.</li>
+      <li>Scroll to the bottom and tap <strong>Delete my account</strong> (shown in red).</li>
+      <li>Confirm on the warning screen. Your account is deleted immediately and you are signed out.</li>
+    </ol>
+  </div>
+  <p>This triggers a permanent deletion (<code>DELETE /api/users/me</code>) on our servers — there is no recovery step.</p>
+
+  <h2>Option 2 — Request deletion by email</h2>
+  <p>If you can no longer sign in to the app, email us at <a href="mailto:privacy@mystigo.world">privacy@mystigo.world</a> <strong>from the email address registered to your account</strong>, with the subject line "Account deletion request". We will verify ownership and delete your account within 30 days, and confirm once complete.</p>
+
+  <h2>What is deleted</h2>
+  <ul>
+    <li>Your account and login credentials (email, password hash)</li>
+    <li>Your profile (display name, avatar)</li>
+    <li>Your trips, progress, scores, and completion history</li>
+    <li>Your point-of-interest discoveries and location history</li>
+    <li>Your leaderboard entry and ranking</li>
+  </ul>
+
+  <h2>What may be retained</h2>
+  <p>In line with our <a href="privacy.html">Privacy Policy</a>:</p>
+  <ul>
+    <li>Account and profile data are removed within <strong>30 days</strong>; location history is removed <strong>immediately</strong> on deletion.</li>
+    <li>Aggregated, anonymized usage statistics that can no longer be linked to you may be retained.</li>
+    <li>Points-of-interest you submitted that were <strong>approved and published</strong> for other users may remain in the app in anonymized form (no longer attributed to your account).</li>
+    <li>We may retain limited records where required to meet a legal obligation.</li>
+  </ul>
+
+  <h2>Questions</h2>
+  <p>For anything related to your data or this process, contact <a href="mailto:privacy@mystigo.world">privacy@mystigo.world</a>.</p>
+</main>
+
+<footer>
+  <div class="footer-logo">Myst<span>i</span>go</div>
+  <p class="footer-copy">© 2025 Mystigo. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
