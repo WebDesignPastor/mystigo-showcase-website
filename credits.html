@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sources & credits — Mystigo</title>
+  <meta name="description" content="Mystigo sources and credits" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #681417;
+      --bg-warm: #E9E6DF;
+      --text-dark: #2E2E2E;
+      --text-mid: #5a5a5a;
+      --white: #FFFFFF;
+      --accent-yellow: #FFC65A;
+    }
+    body { font-family: 'Inter', sans-serif; color: var(--text-dark); background: var(--bg-warm); }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(20, 8, 10, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .nav-logo { font-family: 'MedievalSharp', serif; font-size: 1.5rem; color: var(--white); text-decoration: none; }
+    .nav-logo span { color: var(--accent-yellow); }
+    .nav-back { font-size: 0.82rem; color: rgba(255,255,255,0.6); text-decoration: none; transition: color 0.2s; }
+    .nav-back:hover { color: var(--white); }
+    main { max-width: 760px; margin: 0 auto; padding: 8rem 1.5rem 5rem; }
+    h1 { font-family: 'MedievalSharp', serif; font-size: 2.2rem; color: var(--text-dark); margin-bottom: 0.5rem; }
+    .updated { font-size: 0.8rem; color: var(--text-mid); margin-bottom: 3rem; }
+    h2 { font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 700; margin: 2.5rem 0 0.75rem; color: var(--text-dark); }
+    p, li { font-size: 0.95rem; color: var(--text-mid); line-height: 1.75; margin-bottom: 0.75rem; }
+    ul { padding-left: 1.4rem; }
+    a { color: var(--primary); }
+    footer {
+      background: #0e0a0b; padding: 2rem 1.5rem; text-align: center;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .footer-logo { font-family: 'MedievalSharp', serif; font-size: 1.2rem; color: var(--white); margin-bottom: 0.75rem; }
+    .footer-logo span { color: var(--accent-yellow); }
+    .footer-copy { font-size: 0.75rem; color: rgba(255,255,255,0.25); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">Myst<span>i</span>go</a>
+  <a href="/" class="nav-back">← Back to home</a>
+</nav>
+
+<main>
+  <h1>Sources &amp; credits</h1>
+  <p class="updated">Last updated: October 2026</p>
+
+  <p>Mystigo builds on the work of researchers and volunteers. Every entry in the App cites its source, its author when known, and its licence.</p>
+
+  <h2>1. Inventaire général du patrimoine culturel — Région Bretagne</h2>
+  <p>Heritage data is published under the <a href="https://www.etalab.gouv.fr/wp-content/uploads/2017/04/ETALAB-Licence-Ouverte-v2.0.pdf" target="_blank" rel="noopener">Licence Ouverte 2.0</a>. Dataset: <a href="https://data.bretagne.bzh/explore/dataset/inventaire-du-patrimoine-breton-couche-simplifiee/" target="_blank" rel="noopener">Inventaire du patrimoine breton (couche simplifiée)</a>.</p>
+  <p>Photographs are © their rights holders (Inventaire général, Région Bretagne, cities…). Their reproduction is subject to authorisation.</p>
+  <p>We explicitly thank the researchers of the Inventaire général whose files are credited by name on each entry.</p>
+
+  <h2>2. Ministère de la Culture — POP / Mérimée database</h2>
+  <p>Data from the Mérimée database, published on the Plateforme ouverte du patrimoine (POP) under Licence Ouverte 2.0: <a href="https://pop.culture.gouv.fr" target="_blank" rel="noopener">https://pop.culture.gouv.fr</a>.</p>
+
+  <h2>3. Wikipedia</h2>
+  <p>Texts are available under the <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.fr" target="_blank" rel="noopener">CC BY-SA 4.0</a> licence. Excerpts are abridged and machine-translated into English; each entry links to the original article.</p>
+
+  <h2>4. Wikidata</h2>
+  <p>Data is available under CC0: <a href="https://www.wikidata.org/wiki/Wikidata:Copyright" target="_blank" rel="noopener">https://www.wikidata.org/wiki/Wikidata:Copyright</a>.</p>
+
+  <h2>5. Wikimedia Commons</h2>
+  <p>Each photograph is credited, with its author and licence, on its entry.</p>
+
+  <h2>6. OpenStreetMap and map tiles</h2>
+  <p>© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, under the ODbL licence. Map tiles are provided by OpenFreeMap, © OpenMapTiles.</p>
+
+  <h2>7. Automatically generated content</h2>
+  <p>The on-site questions and the English translations are generated automatically, currently with Google Gemini, from the sources above. They may contain errors: please report them from the App.</p>
+
+  <h2>8. Rights holders</h2>
+  <p>If you are a rights holder and have a request about content shown in the App, contact us at <a href="mailto:contact@mystigo.world">contact@mystigo.world</a>.</p>
+</main>
+
+<footer>
+  <div class="footer-logo">Myst<span>i</span>go</div>
+  <p class="footer-copy">© 2025 Mystigo. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
